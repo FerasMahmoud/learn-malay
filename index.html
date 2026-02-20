@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🇲🇾 تعلم الملايو | Belajar Bahasa Melayu</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #CC0001;
+      --primary-light: #ff2336;
+      --gold: #FFD700;
+      --gold-light: #ffe84d;
+      --blue: #003893;
+      --blue-light: #1a4ab8;
+      --dark: #0f1923;
+      --darker: #090f18;
+      --card: #131f2e;
+      --card2: #1a2840;
+      --text: #e8eef5;
+      --text-muted: #7a8fa6;
+      --success: #27ae60;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Tajawal', 'Inter', sans-serif;
+      background: var(--darker);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* === BG === */
+    .bg-animated {
+      position: fixed; inset: 0; z-index: 0;
+      background: linear-gradient(135deg, #090f18 0%, #0f1923 50%, #0a1520 100%);
+    }
+    .bg-animated::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 60%, rgba(204,0,1,0.10) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 20%, rgba(0,56,147,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 90%, rgba(255,215,0,0.05) 0%, transparent 40%);
+      animation: bgPulse 9s ease-in-out infinite alternate;
+    }
+    @keyframes bgPulse { from { opacity: 0.5; } to { opacity: 1; } }
+
+    /* === LAYOUT === */
+    .app-wrapper { position: relative; z-index: 1; display: flex; min-height: 100vh; }
+
+    /* === SIDEBAR === */
+    .sidebar {
+      width: 265px; min-height: 100vh;
+      background: rgba(19,31,46,0.97);
+      border-left: 1px solid var(--border);
+      padding: 20px 14px;
+      display: flex; flex-direction: column; gap: 4px;
+      backdrop-filter: blur(20px);
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    .sidebar-logo {
+      font-size: 20px; font-weight: 800; color: white;
+      padding: 10px 14px 18px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .sidebar-logo .flag { font-size: 28px; }
+    .sidebar-logo .sub { font-size: 11px; color: var(--text-muted); font-weight: 400; display: block; margin-top: 2px; }
+
+    .section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.8px;
+      text-transform: uppercase; color: var(--text-muted);
+      margin: 14px 0 6px 8px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 11px;
+      padding: 11px 14px; border-radius: 11px;
+      cursor: pointer; transition: all 0.18s;
+      font-size: 14px; font-weight: 500;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .nav-item.active {
+      background: linear-gradient(135deg, rgba(204,0,1,0.22), rgba(204,0,1,0.08));
+      color: white; border-color: rgba(204,0,1,0.28);
+    }
+    .nav-icon { font-size: 17px; width: 22px; text-align: center; }
+    .nav-badge {
+      margin-right: auto; background: var(--primary);
+      color: white; border-radius: 10px; font-size: 10px;
+      padding: 2px 8px; font-weight: 700;
+    }
+
+    /* XP */
+    .xp-section {
+      margin-top: auto; padding: 14px;
+      background: rgba(255,255,255,0.03); border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+    .xp-label { font-size: 12px; color: var(--text-muted); margin-bottom: 7px; display: flex; justify-content: space-between; }
+    .xp-bar { height: 7px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; }
+    .xp-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--gold), var(--primary-light)); transition: width 0.5s ease; }
+    .streak-fire { font-size: 20px; animation: fw 1s ease-in-out infinite alternate; display: inline-block; }
+    @keyframes fw { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+
+    /* === MAIN === */
+    .main-content { flex: 1; padding: 30px 28px; overflow-y: auto; max-height: 100vh; }
+
+    /* === PAGE HEADER === */
+    .page-header { margin-bottom: 28px; }
+    .page-title { font-size: 30px; font-weight: 800; color: white; margin-bottom: 5px; }
+    .page-subtitle { color: var(--text-muted); font-size: 14px; }
+
+    /* === CARDS === */
+    .card {
+      background: rgba(19,31,46,0.85); border-radius: 18px;
+      border: 1px solid var(--border); padding: 22px;
+      backdrop-filter: blur(10px);
+    }
+    .card-title { font-size: 15px; font-weight: 700; color: white; margin-bottom: 14px; }
+
+    /* === STATS === */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 26px; }
+    .stat-card {
+      background: rgba(19,31,46,0.85); border-radius: 15px;
+      border: 1px solid var(--border); padding: 18px;
+      text-align: center; transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-icon { font-size: 26px; margin-bottom: 7px; }
+    .stat-value { font-size: 26px; font-weight: 800; color: white; }
+    .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+    /* === LESSON GRID === */
+    .lessons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 18px; }
+    .lesson-card {
+      background: rgba(19,31,46,0.85); border-radius: 18px;
+      border: 1px solid var(--border); padding: 22px;
+      cursor: pointer; transition: all 0.22s;
+      position: relative; overflow: hidden;
+    }
+    .lesson-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(204,0,1,0.14), transparent);
+      opacity: 0; transition: opacity 0.22s;
+    }
+    .lesson-card:hover { transform: translateY(-3px); border-color: rgba(204,0,1,0.35); }
+    .lesson-card:hover::before { opacity: 1; }
+    .lesson-card.completed { border-color: rgba(39,174,96,0.35); }
+    .lesson-card.completed::before { background: linear-gradient(135deg, rgba(39,174,96,0.09), transparent); opacity: 1; }
+    .lesson-emoji { font-size: 34px; margin-bottom: 11px; }
+    .lesson-title { font-size: 16px; font-weight: 700; color: white; margin-bottom: 5px; }
+    .lesson-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .lesson-meta { margin-top: 14px; display: flex; align-items: center; gap: 10px; }
+    .lesson-badge {
+      padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+      background: rgba(204,0,1,0.18); color: #ff4455;
+    }
+    .lesson-badge.done { background: rgba(39,174,96,0.18); color: #27ae60; }
+    .lesson-xp { font-size: 12px; color: var(--gold); font-weight: 600; }
+
+    /* === MODAL === */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,0.87); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-box {
+      background: var(--card); border-radius: 22px;
+      border: 1px solid var(--border); width: 100%; max-width: 720px;
+      max-height: 88vh; overflow-y: auto;
+    }
+    .modal-header {
+      padding: 22px 26px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--card); z-index: 1;
+      border-radius: 22px 22px 0 0;
+    }
+    .modal-body { padding: 26px; }
+    .close-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 20px; transition: color 0.2s; }
+    .close-btn:hover { color: white; }
+
+    /* === VOCAB TABLE === */
+    .vocab-table { width: 100%; border-collapse: collapse; }
+    .vocab-table th {
+      padding: 10px 14px; text-align: right;
+      border-bottom: 2px solid var(--border);
+      font-size: 11px; text-transform: uppercase;
+      color: var(--text-muted); font-weight: 700; letter-spacing: 0.8px;
+    }
+    .vocab-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
+    .vocab-table tr:last-child td { border-bottom: none; }
+    .vocab-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .col-malay { color: var(--gold-light); font-weight: 700; font-size: 17px; font-family: 'Inter'; }
+    .col-eng-pron { color: #60a5fa; font-family: 'Inter'; font-size: 13px; font-style: italic; }
+    .col-arabic { color: var(--text); font-size: 15px; }
+    .col-english { color: var(--text-muted); font-family: 'Inter'; font-size: 13px; }
+
+    /* === PHRASE CARDS === */
+    .phrase-card {
+      background: rgba(255,255,255,0.03); border-radius: 14px;
+      padding: 16px 18px; margin-bottom: 12px;
+      border: 1px solid var(--border);
+      border-right: 3px solid var(--primary);
+    }
+    .phrase-malay { font-size: 20px; font-weight: 700; color: var(--gold-light); font-family: 'Inter'; margin-bottom: 4px; }
+    .phrase-pron { font-size: 13px; color: #60a5fa; font-family: 'Inter'; font-style: italic; margin-bottom: 6px; }
+    .phrase-arabic { font-size: 15px; color: var(--text); }
+    .phrase-english { font-size: 13px; color: var(--text-muted); margin-top: 3px; font-family: 'Inter'; }
+    .phrase-tip { font-size: 13px; color: #60a5fa; margin-top: 10px; background: rgba(96,165,250,0.07); padding: 8px 12px; border-radius: 8px; }
+
+    /* === GRAMMAR NOTE === */
+    .grammar-note {
+      background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(204,0,1,0.06));
+      border: 1px solid rgba(255,215,0,0.18); border-radius: 14px; padding: 18px;
+      margin: 18px 0;
+    }
+    .grammar-note h4 { color: var(--gold); font-size: 14px; margin-bottom: 9px; }
+    .grammar-note p { color: var(--text); font-size: 14px; line-height: 1.75; }
+
+    /* === QUIZ === */
+    .quiz-question { font-size: 19px; font-weight: 700; color: white; margin-bottom: 22px; text-align: center; line-height: 1.4; }
+    .quiz-options { display: grid; gap: 11px; }
+    .quiz-opt {
+      padding: 14px 18px; border-radius: 13px;
+      border: 2px solid var(--border); background: rgba(255,255,255,0.03);
+      cursor: pointer; transition: all 0.18s; font-size: 14px; text-align: right;
+      color: var(--text);
+    }
+    .quiz-opt:hover { border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.06); }
+    .quiz-opt.correct { border-color: var(--success); background: rgba(39,174,96,0.12); color: white; }
+    .quiz-opt.wrong { border-color: var(--primary); background: rgba(204,0,1,0.12); }
+
+    /* === FLASHCARDS === */
+    .flashcard-area { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+    .flashcard { width: 100%; max-width: 500px; height: 230px; perspective: 1000px; cursor: pointer; }
+    .flashcard-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.55s; }
+    .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+    .flashcard-front, .flashcard-back {
+      position: absolute; inset: 0; backface-visibility: hidden;
+      border-radius: 18px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px; padding: 24px;
+    }
+    .flashcard-front { background: linear-gradient(135deg, var(--card), var(--card2)); border: 2px solid rgba(255,215,0,0.28); }
+    .flashcard-back { background: linear-gradient(135deg, rgba(204,0,1,0.18), var(--card)); border: 2px solid rgba(204,0,1,0.28); transform: rotateY(180deg); }
+    .card-word { font-size: 34px; font-weight: 800; }
+    .card-pron { font-size: 15px; font-family: 'Inter'; color: #60a5fa; font-style: italic; }
+    .card-hint { font-size: 12px; color: var(--text-muted); }
+    .card-cat { font-size: 11px; padding: 3px 11px; border-radius: 20px; background: rgba(255,215,0,0.12); color: var(--gold); }
+    .flashcard-controls { display: flex; gap: 14px; }
+
+    /* === PROGRESS === */
+    .progress-bar { height: 5px; background: rgba(255,255,255,0.07); border-radius: 10px; overflow: hidden; margin: 7px 0; }
+    .progress-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--gold), var(--primary-light)); transition: width 0.5s ease; }
+
+    /* === BTNS === */
+    .btn {
+      padding: 11px 22px; border-radius: 11px; border: none;
+      font-family: 'Tajawal', sans-serif; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all 0.18s; display: inline-flex; align-items: center; gap: 7px;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(204,0,1,0.28); }
+    .btn-secondary { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.11); }
+    .btn-blue { background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: white; }
+
+    /* === CONFETTI === */
+    .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
+    .confetti-piece { position: absolute; width: 9px; height: 9px; border-radius: 2px; animation: cfFall 3s linear forwards; }
+    @keyframes cfFall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+    /* === PRON LEGEND === */
+    .pron-legend {
+      background: rgba(96,165,250,0.07); border: 1px solid rgba(96,165,250,0.2);
+      border-radius: 14px; padding: 18px; margin-bottom: 22px;
+    }
+    .pron-legend h4 { color: #60a5fa; font-size: 14px; margin-bottom: 12px; }
+    .pron-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+    .pron-item { font-size: 13px; padding: 7px 10px; background: rgba(255,255,255,0.03); border-radius: 8px; }
+    .pron-item .letter { color: var(--gold-light); font-family: 'Inter'; font-weight: 700; }
+    .pron-item .sound { color: var(--text-muted); }
+
+    /* === TABS === */
+    .tab-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04); color: var(--text-muted);
+      transition: all 0.18s; font-family: 'Tajawal', sans-serif;
+    }
+    .tab-btn.active { background: rgba(204,0,1,0.2); border-color: rgba(204,0,1,0.35); color: white; }
+
+    /* === ALL WORDS TABLE (flashcard page) === */
+    .all-words { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 9px; margin-top: 20px; }
+    .word-chip {
+      padding: 10px 14px; border-radius: 11px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .word-chip:hover { border-color: rgba(255,215,0,0.3); background: rgba(255,215,0,0.05); }
+    .word-chip .w-malay { color: var(--gold-light); font-family: 'Inter'; font-weight: 700; font-size: 15px; }
+    .word-chip .w-pron { color: #60a5fa; font-family: 'Inter'; font-size: 11px; font-style: italic; }
+    .word-chip .w-ar { color: var(--text-muted); font-size: 12px; margin-top: 1px; }
+
+    @media (max-width: 1024px) { .sidebar { width: 220px; } .stats-row { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 768px) {
+      .app-wrapper { flex-direction: column; }
+      .sidebar { width: 100%; min-height: auto; position: relative; height: auto; }
+      .main-content { padding: 18px 14px; max-height: none; }
+      .stats-row { grid-template-columns: repeat(2,1fr); }
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.28s ease forwards; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 3px; }
+  </style>
+</head>
+<body x-data="malayApp()" x-init="init()">
+
+  <div class="bg-animated"></div>
+
+  <!-- Confetti -->
+  <div class="confetti-container" x-show="showConfetti">
+    <template x-for="i in 55" :key="i">
+      <div class="confetti-piece"
+        :style="`left:${Math.random()*100}%;top:-20px;background:${['#CC0001','#FFD700','#003893','#27ae60','#ffe84d','#60a5fa'][Math.floor(Math.random()*6)]};animation-delay:${Math.random()*2}s;animation-duration:${2+Math.random()*2}s;`">
+      </div>
+    </template>
+  </div>
+
+  <div class="app-wrapper">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <span class="flag">🇲🇾</span>
+        Bahasa Melayu<br>
+        <span class="sub">تعلم الملايو من الصفر</span>
+      </div>
+
+      <div class="section-label">التعلم</div>
+      <div class="nav-item" :class="{active:page==='home'}" @click="page='home'">
+        <span class="nav-icon">🏠</span> الرئيسية
+      </div>
+      <div class="nav-item" :class="{active:page==='lessons'}" @click="page='lessons'">
+        <span class="nav-icon">📚</span> الدروس
+        <span class="nav-badge" x-text="completedLessons+'/'+lessons.length"></span>
+      </div>
+      <div class="nav-item" :class="{active:page==='flashcards'}" @click="page='flashcards'">
+        <span class="nav-icon">🃏</span> البطاقات
+      </div>
+      <div class="nav-item" :class="{active:page==='quiz'}" @click="page='quiz'; resetQuiz()">
+        <span class="nav-icon">🧠</span> الاختبار
+      </div>
+
+      <div class="section-label">مرجع</div>
+      <div class="nav-item" :class="{active:page==='pronunciation'}" @click="page='pronunciation'">
+        <span class="nav-icon">🔤</span> دليل النطق
+      </div>
+      <div class="nav-item" :class="{active:page==='phrasebook'}" @click="page='phrasebook'">
+        <span class="nav-icon">💬</span> مرشد الجمل
+      </div>
+
+      <!-- XP -->
+      <div class="xp-section">
+        <div class="xp-label">
+          <span>⭐ تقدمك</span>
+          <span x-text="xp+' XP'"></span>
+        </div>
+        <div class="xp-bar"><div class="xp-fill" :style="`width:${Math.min(xp%100,100)}%`"></div></div>
+        <div style="margin-top:9px;font-size:12px;color:var(--text-muted);">
+          <span class="streak-fire">🔥</span>
+          <span x-text="streak+' يوم متتالي'"></span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main class="main-content">
+
+      <!-- ==================== HOME ==================== -->
+      <div x-show="page==='home'" class="fade-in">
+        <div class="page-header">
+          <div class="page-title">Selamat Datang! أهلاً 🇲🇾</div>
+          <div class="page-subtitle">رحلتك في تعلم الملايو تبدأ هنا — خطوة بخطوة</div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-value" x-text="completedLessons"></div><div class="stat-label">درس مكتمل</div></div>
+          <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-value" x-text="learnedWords"></div><div class="stat-label">كلمة تعلمتها</div></div>
+          <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-value" x-text="streak"></div><div class="stat-label">يوم متتالي</div></div>
+          <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value" x-text="xp"></div><div class="stat-label">نقاط XP</div></div>
+        </div>
+
+        <!-- Continue -->
+        <div class="card" style="margin-bottom:22px;">
+          <div class="card-title">🎯 واصل تعلمك</div>
+          <div x-show="lessons.find(l=>!l.done)">
+            <template x-if="lessons.find(l=>!l.done)">
+              <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+                <div style="font-size:46px;" x-text="lessons.find(l=>!l.done)?.emoji"></div>
+                <div style="flex:1;">
+                  <div style="font-size:17px;font-weight:700;color:white;margin-bottom:3px;" x-text="lessons.find(l=>!l.done)?.title"></div>
+                  <div style="font-size:13px;color:var(--text-muted);margin-bottom:11px;" x-text="lessons.find(l=>!l.done)?.desc"></div>
+                  <button class="btn btn-primary" @click="openLesson(lessons.find(l=>!l.done))">▶ ابدأ الدرس</button>
+                </div>
+              </div>
+            </template>
+          </div>
+          <div x-show="!lessons.find(l=>!l.done)" style="text-align:center;padding:18px;">
+            <div style="font-size:46px;margin-bottom:10px;">🎉</div>
+            <div style="font-size:18px;font-weight:700;color:white;">Tahniah! أكملت كل الدروس!</div>
+          </div>
+        </div>
+
+        <!-- Fun fact -->
+        <div class="card">
+          <div class="card-title">💡 هل تعلم؟</div>
+          <div style="display:grid;gap:12px;">
+            <div class="phrase-tip" style="margin:0;">
+              <strong>الملايو أسهل مما تتخيل!</strong> — لا يوجد جنس (مذكر/مؤنث)، ولا تصريف للأفعال حسب الشخص، والكتابة رومانية مثل الإنجليزية تماماً. معظم الكلمات تُقرأ كما تُكتب!
+            </div>
+            <div class="phrase-tip" style="margin:0;border-right-color:var(--gold);">
+              <strong>الملايو والإندونيسية:</strong> — إذا تعلمت الملايو فأنت تفهم حوالي 80% من الإندونيسية — لغة 270 مليون شخص إضافي!
+            </div>
+            <div class="phrase-tip" style="margin:0;border-right-color:var(--gold-light);">
+              <strong>كلمات عربية في الملايو:</strong> — الملايو مليئة بالكلمات العربية! مثل: waktu (وقت)، dunia (دنيا)، maklum (معلوم)، akhir (أخير)، selamat (سلامة). كمتحدث عربي لديك ميزة كبيرة!
+            </div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-secondary" @click="page='pronunciation'">🔤 دليل النطق</button>
+            <button class="btn btn-secondary" @click="page='phrasebook'">💬 مرشد الجمل</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== LESSONS ==================== -->
+      <div x-show="page==='lessons'" class="fade-in">
+        <div class="page-header">
+          <div class="page-title">📚 الدروس</div>
+          <div class="page-subtitle" x-text="completedLessons+' / '+lessons.length+' درس مكتمل'"></div>
+          <div class="progress-bar" style="max-width:280px;margin-top:10px;">
+            <div class="progress-fill" :style="`width:${(completedLessons/lessons.length)*100}%`"></div>
+          </div>
+        </div>
+        <div class="lessons-grid">
+          <template x-for="(lesson,idx) in lessons" :key="idx">
+            <div class="lesson-card" :class="{completed:lesson.done}" @click="openLesson(lesson)">
+              <div class="lesson-emoji" x-text="lesson.emoji"></div>
+              <div class="lesson-title" x-text="lesson.title"></div>
+              <div class="lesson-desc" x-text="lesson.desc"></div>
+              <div class="lesson-meta">
+                <span class="lesson-badge" :class="{done:lesson.done}" x-text="lesson.done?'✓ مكتمل':'▶ ابدأ'"></span>
+                <span class="lesson-xp" x-text="'+'+lesson.xp+' XP'"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- ==================== LESSON MODAL ==================== -->
+      <div class="modal-overlay" x-show="activeLessonModal" @click.self="activeLessonModal=null" style="display:none;">
+        <div class="modal-box" x-show="activeLessonModal">
+          <div class="modal-header">
+            <div>
+              <div style="font-size:19px;font-weight:800;color:white;" x-text="activeLessonModal?.title"></div>
+              <div style="font-size:13px;color:var(--text-muted);" x-text="activeLessonModal?.desc"></div>
+            </div>
+            <button class="close-btn" @click="activeLessonModal=null">✕</button>
+          </div>
+          <div class="modal-body">
+
+            <!-- Tab switcher -->
+            <div class="tab-row">
+              <div class="tab-btn" :class="{active:lessonTab==='vocab'}" @click="lessonTab='vocab'">📖 المفردات</div>
+              <div class="tab-btn" :class="{active:lessonTab==='phrases'}" @click="lessonTab='phrases'">💬 جمل</div>
+              <div class="tab-btn" :class="{active:lessonTab==='grammar'}" @click="lessonTab='grammar'">📝 قواعد</div>
+              <div class="tab-btn" :class="{active:lessonTab==='quiz'}" @click="lessonTab='quiz';setupLessonQuiz()">🧠 اختبار</div>
+            </div>
+
+            <!-- VOCAB TAB -->
+            <div x-show="lessonTab==='vocab'">
+              <table class="vocab-table">
+                <thead>
+                  <tr>
+                    <th>الملايو</th>
+                    <th>النطق بالإنجليزي</th>
+                    <th>العربي</th>
+                    <th>English</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="v in activeLessonModal?.vocab" :key="v.malay">
+                    <tr>
+                      <td class="col-malay" x-text="v.malay"></td>
+                      <td class="col-eng-pron" x-text="v.engPron"></td>
+                      <td class="col-arabic" x-text="v.arabic"></td>
+                      <td class="col-english" x-text="v.english"></td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- PHRASES TAB -->
+            <div x-show="lessonTab==='phrases'">
+              <template x-for="p in activeLessonModal?.phrases" :key="p.malay">
+                <div class="phrase-card">
+                  <div class="phrase-malay" x-text="p.malay"></div>
+                  <div class="phrase-pron" x-text="'🔤 '+p.engPron"></div>
+                  <div class="phrase-arabic" x-text="p.arabic"></div>
+                  <div class="phrase-english" x-text="p.english"></div>
+                  <div class="phrase-tip" x-show="p.tip" x-text="'💡 '+p.tip"></div>
+                </div>
+              </template>
+            </div>
+
+            <!-- GRAMMAR TAB -->
+            <div x-show="lessonTab==='grammar'">
+              <template x-for="g in activeLessonModal?.grammar" :key="g.title">
+                <div class="grammar-note">
+                  <h4 x-text="g.title"></h4>
+                  <p x-text="g.body"></p>
+                  <div x-show="g.example" style="margin-top:12px;padding:10px 14px;background:rgba(255,255,255,0.04);border-radius:10px;font-family:'Inter';font-size:13px;">
+                    <span style="color:var(--gold-light);font-weight:700;" x-text="g.example?.malay"></span>
+                    <span style="color:#60a5fa;font-style:italic;margin-right:10px;margin-left:10px;" x-text="g.example?.pron"></span>
+                    <span style="color:var(--text-muted);" x-text="'— '+g.example?.meaning"></span>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <!-- QUIZ TAB -->
+            <div x-show="lessonTab==='quiz'">
+              <div x-show="!lQuizDone">
+                <div style="text-align:center;margin-bottom:6px;font-size:13px;color:var(--text-muted);" x-text="'سؤال '+(lQuizIdx+1)+' من '+lessonQuizQ.length"></div>
+                <div class="progress-bar" style="margin-bottom:20px;"><div class="progress-fill" :style="`width:${(lQuizIdx/lessonQuizQ.length)*100}%`"></div></div>
+                <div class="quiz-question" x-text="lessonQuizQ[lQuizIdx]?.q"></div>
+                <div class="quiz-options">
+                  <template x-for="opt in lessonQuizQ[lQuizIdx]?.opts" :key="opt">
+                    <div class="quiz-opt"
+                      :class="{correct:lAnswered&&opt===lessonQuizQ[lQuizIdx].ans, wrong:lAnswered&&lChosen===opt&&opt!==lessonQuizQ[lQuizIdx].ans}"
+                      @click="!lAnswered&&answerLQ(opt)" x-text="opt"></div>
+                  </template>
+                </div>
+                <div x-show="lAnswered" style="margin-top:14px;padding:12px;border-radius:10px;font-size:14px;"
+                  :style="lCorrect?'background:rgba(39,174,96,0.1);color:#27ae60;':'background:rgba(204,0,1,0.1);color:#ff4455;'"
+                  x-text="lCorrect?'✓ Betul! صحيح!':'✗ Salah — الجواب: '+lessonQuizQ[lQuizIdx]?.ans"></div>
+                <button x-show="lAnswered" class="btn btn-primary" style="margin-top:14px;width:100%;" @click="nextLQ()">التالي ▶</button>
+              </div>
+              <div x-show="lQuizDone" style="text-align:center;padding:20px;">
+                <div style="font-size:50px;margin-bottom:14px;" x-text="(lScore/lessonQuizQ.length)>=0.7?'🏆':'📚'"></div>
+                <div style="font-size:22px;font-weight:800;color:white;margin-bottom:6px;" x-text="'نتيجتك: '+lScore+'/'+lessonQuizQ.length"></div>
+                <div style="color:var(--text-muted);font-size:14px;margin-bottom:20px;" x-text="(lScore/lessonQuizQ.length)>=0.7?'Bagus sekali! ممتاز! 🎉':'راجع المفردات وحاول مرة ثانية 💪'"></div>
+                <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                  <button class="btn btn-primary" @click="setupLessonQuiz()">🔄 أعد الاختبار</button>
+                  <button class="btn btn-secondary" @click="lessonTab='vocab'">📖 راجع المفردات</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Complete -->
+            <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap;" x-show="lessonTab!=='quiz'">
+              <button class="btn btn-primary" @click="completeLesson()" x-text="activeLessonModal?.done?'✓ مكتمل بالفعل':'🏆 أنهِ الدرس واحصل على XP'"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== FLASHCARDS ==================== -->
+      <div x-show="page==='flashcards'" class="fade-in">
+        <div class="page-header">
+          <div class="page-title">🃏 البطاقات التعليمية</div>
+          <div class="page-subtitle">انقر البطاقة لتقليبها — النطق الإنجليزي موجود في كل بطاقة</div>
+        </div>
+
+        <!-- Filter by category -->
+        <div class="tab-row" style="margin-bottom:20px;">
+          <div class="tab-btn" :class="{active:fcFilter==='all'}" @click="fcFilter='all';fcIdx=0;cardFlipped=false">الكل</div>
+          <template x-for="cat in fcCategories" :key="cat">
+            <div class="tab-btn" :class="{active:fcFilter===cat}" @click="fcFilter=cat;fcIdx=0;cardFlipped=false" x-text="cat"></div>
+          </template>
+        </div>
+
+        <div class="flashcard-area">
+          <div style="text-align:center;">
+            <span style="font-size:13px;color:var(--text-muted);" x-text="(fcIdx+1)+' / '+filteredCards.length"></span>
+            <div class="progress-bar" style="max-width:320px;margin:7px auto;">
+              <div class="progress-fill" :style="`width:${((fcIdx+1)/filteredCards.length)*100}%`"></div>
+            </div>
+          </div>
+
+          <div class="flashcard" :class="{flipped:cardFlipped}" @click="cardFlipped=!cardFlipped">
+            <div class="flashcard-inner">
+              <div class="flashcard-front">
+                <span class="card-cat" x-text="filteredCards[fcIdx]?.category"></span>
+                <span class="card-word" style="color:var(--gold-light);font-family:'Inter';" x-text="filteredCards[fcIdx]?.malay"></span>
+                <span class="card-pron" x-text="filteredCards[fcIdx]?.engPron"></span>
+                <span class="card-hint">انقر للترجمة 👆</span>
+              </div>
+              <div class="flashcard-back">
+                <span class="card-cat" x-text="filteredCards[fcIdx]?.category"></span>
+                <span class="card-word" style="color:white;" x-text="filteredCards[fcIdx]?.arabic"></span>
+                <span style="font-family:'Inter';color:#60a5fa;font-size:14px;font-style:italic;" x-text="filteredCards[fcIdx]?.engPron"></span>
+                <span style="font-family:'Inter';color:var(--text-muted);font-size:13px;" x-text="filteredCards[fcIdx]?.english"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flashcard-controls">
+            <button class="btn btn-secondary" @click="fcIdx=(fcIdx-1+filteredCards.length)%filteredCards.length;cardFlipped=false">◀ السابق</button>
+            <button class="btn btn-secondary" @click="cardFlipped=false">🔄</button>
+            <button class="btn btn-primary" @click="fcIdx=(fcIdx+1)%filteredCards.length;cardFlipped=false">التالي ▶</button>
+          </div>
+
+          <!-- All words -->
+          <div style="width:100%;">
+            <div style="font-weight:700;color:white;font-size:14px;margin-bottom:12px;">كل الكلمات (<span x-text="filteredCards.length"></span>)</div>
+            <div class="all-words">
+              <template x-for="(fc,i) in filteredCards" :key="i">
+                <div class="word-chip" @click="fcIdx=i;cardFlipped=false;">
+                  <div class="w-malay" x-text="fc.malay"></div>
+                  <div class="w-pron" x-text="fc.engPron"></div>
+                  <div class="w-ar" x-text="fc.arabic"></div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== QUIZ ==================== -->
+      <div x-show="page==='quiz'" class="fade-in">
+        <div class="page-header">
+          <div class="page-title">🧠 اختبر نفسك</div>
+          <div class="page-subtitle">اختبار شامل — كل الكلمات والجمل</div>
+        </div>
+        <div class="card" style="max-width:580px;margin:0 auto;">
+          <div x-show="!quizActive&&!quizFinished" style="text-align:center;padding:18px;">
+            <div style="font-size:54px;margin-bottom:14px;">🎯</div>
+            <div style="font-size:20px;font-weight:700;color:white;margin-bottom:7px;">هل أنت مستعد؟</div>
+            <div style="color:var(--text-muted);margin-bottom:22px;" x-text="allQ.length+' سؤال ينتظرك'"></div>
+            <button class="btn btn-primary" @click="startFullQuiz()">ابدأ الاختبار 🚀</button>
+          </div>
+
+          <div x-show="quizActive">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+              <span style="font-size:13px;color:var(--text-muted);" x-text="'سؤال '+(qIdx+1)+' من '+shuffledQ.length"></span>
+              <span style="font-size:13px;color:var(--gold);font-weight:700;" x-text="'النتيجة: '+qScore+'/'+qIdx"></span>
+            </div>
+            <div class="progress-bar" style="margin-bottom:22px;"><div class="progress-fill" :style="`width:${(qIdx/shuffledQ.length)*100}%`"></div></div>
+            <div class="quiz-question" x-text="shuffledQ[qIdx]?.q"></div>
+            <div class="quiz-options">
+              <template x-for="opt in shuffledQ[qIdx]?.opts" :key="opt">
+                <div class="quiz-opt"
+                  :class="{correct:qAnswered&&opt===shuffledQ[qIdx].ans, wrong:qAnswered&&qChosen===opt&&opt!==shuffledQ[qIdx].ans}"
+                  @click="!qAnswered&&answerQ(opt)" x-text="opt"></div>
+              </template>
+            </div>
+            <div x-show="qAnswered" style="margin-top:14px;padding:12px;border-radius:10px;font-size:14px;"
+              :style="qCorrect?'background:rgba(39,174,96,0.1);color:#27ae60;':'background:rgba(204,0,1,0.1);color:#ff4455;'"
+              x-text="qCorrect?'✓ Betul! صحيح!':'✗ Salah — الجواب: '+shuffledQ[qIdx]?.ans"></div>
+            <button x-show="qAnswered" class="btn btn-primary" style="margin-top:14px;width:100%;" @click="nextQ()">التالي ▶</button>
+          </div>
+
+          <div x-show="quizFinished" style="text-align:center;padding:20px;">
+            <div style="font-size:54px;margin-bottom:14px;" x-text="(qScore/shuffledQ.length)>=0.7?'🏆':'📚'"></div>
+            <div style="font-size:24px;font-weight:800;color:white;margin-bottom:7px;" x-text="'نتيجتك: '+qScore+'/'+shuffledQ.length"></div>
+            <div style="color:var(--text-muted);font-size:14px;margin-bottom:22px;" x-text="(qScore/shuffledQ.length)>=0.7?'Bagus sekali! ممتاز جداً 🎉':'راجع الدروس وحاول مرة ثانية 💪'"></div>
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+              <button class="btn btn-primary" @click="startFullQuiz()">🔄 حاول مرة ثانية</button>
+              <button class="btn btn-secondary" @click="page='lessons'">📚 راجع الدروس</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PRONUNCIATION ==================== -->
+      <div x-show="page==='pronunciation'" class="fade-in">
+        <div class="page-header">
+          <div class="page-title">🔤 دليل النطق الشامل</div>
+          <div class="page-subtitle">الملايو تُكتب بأحرف رومانية (مثل الإنجليزية) وتُقرأ كما تُكتب تقريباً!</div>
+        </div>
+
+        <div class="card" style="margin-bottom:22px;">
+          <div class="card-title">✅ القاعدة الذهبية</div>
+          <div style="display:grid;gap:12px;">
+            <div class="phrase-tip" style="margin:0;">
+              <strong>الملايو تُقرأ كما تُكتب تقريباً</strong> — على عكس الإنجليزية، لا توجد حروف صامتة أو استثناءات كثيرة. ما تراه تقوله!
+            </div>
+            <div class="phrase-tip" style="margin:0;border-right-color:var(--gold);">
+              <strong>كل حرف له صوت واحد فقط</strong> — مثلاً حرف A دائماً يُنطق "آ" (مثل star)، مش "أي" مثل الإنجليزية.
+            </div>
+          </div>
+        </div>
+
+        <template x-for="section in pronGuide" :key="section.title">
+          <div class="card" style="margin-bottom:18px;">
+            <div class="card-title" x-text="section.title"></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;">
+              <template x-for="item in section.items" :key="item.letter">
+                <div style="padding:12px 14px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid var(--border);">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+                    <span style="font-size:22px;font-weight:800;color:var(--gold-light);font-family:'Inter';min-width:36px;" x-text="item.letter"></span>
+                    <span style="font-size:14px;color:var(--text);" x-text="item.sound"></span>
+                  </div>
+                  <div style="font-size:13px;color:var(--text-muted);" x-text="'مثال: '+item.example"></div>
+                  <div x-show="item.tip" style="font-size:12px;color:#60a5fa;margin-top:5px;" x-text="item.tip"></div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+
+        <!-- Tongue twisters / practice -->
+        <div class="card">
+          <div class="card-title">🗣️ جمل للتدريب على النطق</div>
+          <div style="display:grid;gap:12px;">
+            <template x-for="s in pronPractice" :key="s.malay">
+              <div class="phrase-card">
+                <div class="phrase-malay" x-text="s.malay"></div>
+                <div class="phrase-pron" x-text="'🔤 '+s.pron"></div>
+                <div class="phrase-arabic" x-text="s.arabic"></div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PHRASEBOOK ==================== -->
+      <div x-show="page==='phrasebook'" class="fade-in">
+        <div class="page-header">
+          <div class="page-title">💬 مرشد الجمل</div>
+          <div class="page-subtitle">جمل ضرورية للاستخدام اليومي — مع النطق الإنجليزي</div>
+        </div>
+
+        <template x-for="section in phrasebook" :key="section.title">
+          <div class="card" style="margin-bottom:18px;">
+            <div class="card-title" x-text="section.icon+' '+section.title"></div>
+            <template x-for="p in section.phrases" :key="p.malay">
+              <div class="phrase-card">
+                <div class="phrase-malay" x-text="p.malay"></div>
+                <div class="phrase-pron" x-text="'🔤 '+p.pron"></div>
+                <div class="phrase-arabic" x-text="p.arabic"></div>
+                <div class="phrase-english" x-text="p.english"></div>
+                <div class="phrase-tip" x-show="p.tip" x-text="'💡 '+p.tip"></div>
+              </div>
+            </template>
+          </div>
+        </template>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+  function malayApp() {
+    return {
+      page: 'home',
+      xp: 0, streak: 1, learnedWords: 0,
+      showConfetti: false,
+      activeLessonModal: null,
+      lessonTab: 'vocab',
+      cardFlipped: false,
+      fcIdx: 0, fcFilter: 'all',
+
+      // quiz
+      quizActive: false, quizFinished: false,
+      qIdx: 0, qScore: 0, qAnswered: false, qChosen: '', qCorrect: false,
+      shuffledQ: [],
+
+      // lesson quiz
+      lessonQuizQ: [], lQuizIdx: 0, lScore: 0, lAnswered: false, lChosen: '', lCorrect: false, lQuizDone: false,
+
+      get completedLessons() { return this.lessons.filter(l=>l.done).length; },
+      get fcCategories() { return [...new Set(this.flashcards.map(f=>f.category))]; },
+      get filteredCards() {
+        if (this.fcFilter === 'all') return this.flashcards;
+        return this.flashcards.filter(f=>f.category===this.fcFilter);
+      },
+
+      lessons: [
+        { emoji:'👋', title:'التحيات والمجاملات', desc:'Salam! — كيف تحيي وتودع وتعبر عن الامتنان بالملايو', xp:50, done:false,
+          vocab:[
+            {malay:'Selamat datang',  engPron:'suh-LAH-mat DAH-tang',   arabic:'أهلاً وسهلاً / مرحباً',       english:'Welcome'},
+            {malay:'Selamat pagi',    engPron:'suh-LAH-mat PAH-ghee',    arabic:'صباح الخير',                   english:'Good morning'},
+            {malay:'Selamat petang',  engPron:'suh-LAH-mat puh-TANG',    arabic:'مساء الخير (عصراً)',           english:'Good afternoon/evening'},
+            {malay:'Selamat malam',   engPron:'suh-LAH-mat MAH-lam',     arabic:'مساء الخير / تصبح على خير',   english:'Good night'},
+            {malay:'Apa khabar?',     engPron:'AH-pa KHA-bar',           arabic:'كيف حالك؟',                   english:'How are you?'},
+            {malay:'Khabar baik',     engPron:'KHA-bar BAH-ik',          arabic:'بخير، شكراً',                 english:'I am fine'},
+            {malay:'Terima kasih',    engPron:'tuh-REE-mah KAH-see',     arabic:'شكراً',                       english:'Thank you'},
+            {malay:'Sama-sama',       engPron:'SAH-mah SAH-mah',         arabic:'عفواً / على الرحب',           english:'You\'re welcome'},
+            {malay:'Maaf',            engPron:'MAH-af',                  arabic:'آسف / اعذرني',                english:'Sorry / Excuse me'},
+            {malay:'Selamat tinggal', engPron:'suh-LAH-mat TING-gal',    arabic:'مع السلامة',                  english:'Goodbye (said by one leaving)'},
+            {malay:'Jumpa lagi',      engPron:'JUM-pa LAH-ghee',         arabic:'إلى اللقاء',                  english:'See you again'},
+            {malay:'Ya / Tidak',      engPron:'YAH / TEE-dak',           arabic:'نعم / لا',                   english:'Yes / No'},
+          ],
+          phrases:[
+            {malay:'Apa khabar? Saya khabar baik.', engPron:'AH-pa KHA-bar? SAH-ya KHA-bar BAH-ik.', arabic:'كيف حالك؟ أنا بخير.', english:'How are you? I am fine.', tip:'هذا السؤال والجواب الأساسي — احفظهم معاً'},
+            {malay:'Terima kasih banyak-banyak!',   engPron:'tuh-REE-mah KAH-see BAH-nyak BAH-nyak!', arabic:'شكراً جزيلاً!', english:'Thank you very much!', tip:'banyak-banyak تضعيف للكلمة تعني "كثير جداً" — التكرار في الملايو يعني الجمع أو التأكيد!'},
+            {malay:'Maaf, boleh saya tahu nama awak?', engPron:'MAH-af, BOH-lay SAH-ya TAH-hoo NAH-mah AH-wak?', arabic:'عذراً، ما اسمك؟', english:'Excuse me, may I know your name?', tip:'boleh = يمكن، saya = أنا، nama = اسم، awak = أنت (غير رسمي)'},
+          ],
+          grammar:[
+            {title:'📌 selamat — كلمة سحرية', body:'كلمة "selamat" مأخوذة من العربية "سلامة"! تستخدمها مع أي وقت أو مناسبة: selamat pagi (صباح الخير), selamat hari jadi (عيد ميلاد سعيد), selamat tahun baru (سنة جديدة سعيدة).', example:{malay:'Selamat hari jadi!', pron:'suh-LAH-mat HAH-ree JAH-dee', meaning:'عيد ميلاد سعيد!'}},
+            {title:'📌 لا يوجد تصريف للفعل', body:'أروع شيء في الملايو! الفعل لا يتغير مع أي ضمير — سواء أنا أو أنت أو هو أو هم. saya makan, awak makan, dia makan = أنا آكل، أنت تأكل، هو يأكل. نفس الكلمة!', example:{malay:'Saya makan. Dia makan.', pron:'SAH-ya MAH-kan. DEE-ya MAH-kan.', meaning:'أنا آكل. هو يأكل. (نفس الفعل!)'}},
+          ],
+          quizItems:[
+            {q:'كيف تقول "شكراً" بالملايو؟', opts:['Selamat pagi','Terima kasih','Sama-sama','Jumpa lagi'], ans:'Terima kasih'},
+            {q:'ما معنى "Apa khabar"؟', opts:['صباح الخير','مع السلامة','كيف حالك؟','شكراً'], ans:'كيف حالك؟'},
+            {q:'كيف تقول "صباح الخير"؟', opts:['Selamat malam','Selamat petang','Selamat pagi','Selamat tinggal'], ans:'Selamat pagi'},
+            {q:'ما معنى "Ya"؟', opts:['لا','ربما','نعم','مرحباً'], ans:'نعم'},
+          ]
+        },
+
+        { emoji:'🔢', title:'الأرقام ١-١٠٠٠', desc:'Nombor — الأرقام أساس كل شيء، للتسوق والوقت والعمر', xp:60, done:false,
+          vocab:[
+            {malay:'satu',    engPron:'SAH-too',      arabic:'واحد',    english:'1'},
+            {malay:'dua',     engPron:'DOO-ah',        arabic:'اثنان',   english:'2'},
+            {malay:'tiga',    engPron:'TEE-gah',       arabic:'ثلاثة',   english:'3'},
+            {malay:'empat',   engPron:'em-PAT',        arabic:'أربعة',   english:'4'},
+            {malay:'lima',    engPron:'LEE-mah',       arabic:'خمسة',    english:'5'},
+            {malay:'enam',    engPron:'EH-nam',        arabic:'ستة',     english:'6'},
+            {malay:'tujuh',   engPron:'TOO-juh',       arabic:'سبعة',    english:'7'},
+            {malay:'lapan',   engPron:'LAH-pan',       arabic:'ثمانية',  english:'8'},
+            {malay:'sembilan',engPron:'suhm-BEE-lan',  arabic:'تسعة',    english:'9'},
+            {malay:'sepuluh', engPron:'suh-POO-luh',   arabic:'عشرة',    english:'10'},
+            {malay:'sebelas', engPron:'suh-BEH-las',   arabic:'أحد عشر', english:'11'},
+            {malay:'dua belas',engPron:'DOO-ah BEH-las',arabic:'اثنا عشر',english:'12'},
+            {malay:'dua puluh',engPron:'DOO-ah POO-luh',arabic:'عشرون',  english:'20'},
+            {malay:'seratus', engPron:'suh-RAH-tus',   arabic:'مئة',     english:'100'},
+            {malay:'seribu',  engPron:'suh-REE-boo',   arabic:'ألف',     english:'1,000'},
+          ],
+          phrases:[
+            {malay:'Berapa harganya?', engPron:'buh-RAH-pa HAR-gah-nya?', arabic:'بكم ثمنه؟', english:'How much does it cost?', tip:'berapa = كم (للسؤال عن الكمية والسعر)'},
+            {malay:'Saya berumur dua puluh tahun.', engPron:'SAH-ya buh-ROO-mur DOO-ah POO-luh TAH-hun.', arabic:'عمري عشرون سنة.', english:'I am 20 years old.', tip:'berumur = عمره، tahun = سنة'},
+            {malay:'Tolong bagi saya dua keping.', engPron:'TOH-long BAH-ghee SAH-ya DOO-ah KEH-ping.', arabic:'أعطني قطعتين من فضلك.', english:'Please give me two pieces.', tip:'tolong = من فضلك، bagi = أعطِ، keping = قطعة'},
+          ],
+          grammar:[
+            {title:'📌 بناء الأرقام — سهل جداً!', body:'الأرقام من 11-19: se/dua/tiga... + belas. مثال: 13 = tiga belas. الأرقام من 20-90: dua/tiga... + puluh. مثال: 30 = tiga puluh. 35 = tiga puluh lima. لا استثناءات!', example:{malay:'tiga puluh lima', pron:'TEE-gah POO-luh LEE-mah', meaning:'35 — ثلاثون وخمسة'}},
+            {title:'📌 berapa — كيف تسأل عن الكمية', body:'"berapa" تستخدم للسؤال عن العدد والسعر والوقت. Berapa? = كم؟ / بكم؟', example:{malay:'Berapa orang?', pron:'buh-RAH-pa OH-rang?', meaning:'كم شخصاً؟'}},
+          ],
+          quizItems:[
+            {q:'ما معنى "lima"؟', opts:['3','4','5','6'], ans:'5'},
+            {q:'كيف تقول "10" بالملايو؟', opts:['sebelas','sembilan','sepuluh','satu'], ans:'sepuluh'},
+            {q:'كيف تسأل "بكم؟"', opts:['Apa ini?','Berapa harganya?','Di mana?','Siapa?'], ans:'Berapa harganya?'},
+            {q:'ما معنى "dua puluh"؟', opts:['12','20','200','2'], ans:'20'},
+          ]
+        },
+
+        { emoji:'🍚', title:'الطعام والمشروبات', desc:'Makanan & minuman — الأكل الماليزي من أشهر المطابخ بالعالم', xp:65, done:false,
+          vocab:[
+            {malay:'nasi',        engPron:'NAH-see',        arabic:'أرز',          english:'rice'},
+            {malay:'ayam',        engPron:'AH-yam',         arabic:'دجاج',         english:'chicken'},
+            {malay:'ikan',        engPron:'EE-kan',         arabic:'سمك',          english:'fish'},
+            {malay:'sayur',       engPron:'SAH-yur',        arabic:'خضار',         english:'vegetables'},
+            {malay:'buah',        engPron:'BOO-ah',         arabic:'فاكهة',        english:'fruit'},
+            {malay:'air',         engPron:'AH-yer',         arabic:'ماء',          english:'water'},
+            {malay:'kopi',        engPron:'KOH-pee',        arabic:'قهوة',         english:'coffee'},
+            {malay:'teh',         engPron:'tay',            arabic:'شاي',          english:'tea'},
+            {malay:'roti',        engPron:'ROH-tee',        arabic:'خبز',          english:'bread'},
+            {malay:'pedas',       engPron:'puh-DAS',        arabic:'حار (تابل)',   english:'spicy'},
+            {malay:'manis',       engPron:'MAH-nis',        arabic:'حلو',          english:'sweet'},
+            {malay:'masam',       engPron:'MAH-sam',        arabic:'حامض',         english:'sour'},
+            {malay:'sedap',       engPron:'suh-DAP',        arabic:'لذيذ',         english:'delicious'},
+            {malay:'lapar',       engPron:'LAH-par',        arabic:'جائع',         english:'hungry'},
+            {malay:'kenyang',     engPron:'kuh-NYANG',      arabic:'شبعان',        english:'full'},
+          ],
+          phrases:[
+            {malay:'Saya nak nasi goreng.', engPron:'SAH-ya nak NAH-see goh-RENG.', arabic:'أريد نسي گورينج (أرز مقلي).', english:'I want fried rice.', tip:'nak = أريد (غير رسمي). nasi goreng هو الأرز المقلي — الأكلة الوطنية الماليزية!'},
+            {malay:'Ini sedap sangat!', engPron:'EE-nee suh-DAP SAH-ngat!', arabic:'هذا لذيذ جداً!', english:'This is very delicious!', tip:'sangat = جداً. ستستخدم هذه الجملة كثيراً في ماليزيا!'},
+            {malay:'Boleh saya tengok menu?', engPron:'BOH-lay SAH-ya tuh-NGOK MEH-nyoo?', arabic:'هل أستطيع رؤية القائمة؟', english:'Can I see the menu?', tip:'boleh = يمكن، tengok = يرى/ينظر'},
+            {malay:'Tolong bagi satu lagi.', engPron:'TOH-long BAH-ghee SAH-too LAH-ghee.', arabic:'من فضلك أعطني واحداً إضافياً.', english:'Please give me one more.', tip:'lagi = أكثر / مرة ثانية / إضافي'},
+          ],
+          grammar:[
+            {title:'📌 nak vs mahu — أريد', body:'"nak" هي النسخة غير الرسمية والأكثر استخداماً في الحديث اليومي. "mahu" أو "mau" أكثر رسمية. كلاهما تعني "أريد". في المطعم والسوق استخدم "nak" — ستبدو طبيعياً!', example:{malay:'Saya nak teh tarik.', pron:'SAH-ya nak tay TAH-rik.', meaning:'أريد شاي تاريك (الشاي الماليزي الشهير)'}},
+            {title:'📌 sangat — جداً', body:'"sangat" تأتي بعد الصفة وتعني "جداً". sangat sedap = لذيذ جداً، sangat pedas = حار جداً، sangat manis = حلو جداً.', example:{malay:'Kopi ini sangat manis!', pron:'KOH-pee EE-nee SAH-ngat MAH-nis!', meaning:'هذه القهوة حلوة جداً!'}},
+          ],
+          quizItems:[
+            {q:'ما معنى "sedap"؟', opts:['حار','لذيذ','حامض','جائع'], ans:'لذيذ'},
+            {q:'كيف تقول "أريد" (غير رسمي)؟', opts:['boleh','nak','tolong','ada'], ans:'nak'},
+            {q:'ما معنى "air"؟', opts:['شاي','قهوة','ماء','عصير'], ans:'ماء'},
+            {q:'كيف تقول "حار (تابل)"؟', opts:['manis','masam','pedas','sedap'], ans:'pedas'},
+          ]
+        },
+
+        { emoji:'👨‍👩‍👧', title:'العائلة والناس', desc:'Keluarga — كيف تتحدث عن أسرتك وتصف الناس', xp:55, done:false,
+          vocab:[
+            {malay:'ibu',         engPron:'EE-boo',         arabic:'أم',          english:'mother'},
+            {malay:'bapa / ayah', engPron:'BAH-pah / AH-yah',arabic:'أب',          english:'father'},
+            {malay:'abang',       engPron:'AH-bang',         arabic:'أخ أكبر',     english:'older brother'},
+            {malay:'adik lelaki', engPron:'AH-dik luh-LAH-kee',arabic:'أخ أصغر',  english:'younger brother'},
+            {malay:'kakak',       engPron:'KAH-kak',         arabic:'أخت كبرى',   english:'older sister'},
+            {malay:'adik perempuan',engPron:'AH-dik puh-REM-puan',arabic:'أخت صغرى',english:'younger sister'},
+            {malay:'datuk',       engPron:'DAH-tuk',         arabic:'جد',          english:'grandfather'},
+            {malay:'nenek',       engPron:'NEH-nek',         arabic:'جدة',         english:'grandmother'},
+            {malay:'anak',        engPron:'AH-nak',          arabic:'ولد / طفل',  english:'child'},
+            {malay:'suami',       engPron:'swah-MEE',         arabic:'زوج',         english:'husband'},
+            {malay:'isteri',      engPron:'is-TUH-ree',       arabic:'زوجة',        english:'wife'},
+            {malay:'kawan / sahabat',engPron:'KAH-wan / sah-HAH-bat',arabic:'صديق',english:'friend'},
+          ],
+          phrases:[
+            {malay:'Nama saya Feras.', engPron:'NAH-mah SAH-ya FEH-ras.', arabic:'اسمي فراس.', english:'My name is Feras.', tip:'nama = اسم، saya = أنا — من أهم الجمل!'},
+            {malay:'Saya ada dua beradik.', engPron:'SAH-ya AH-dah DOO-ah buh-RAH-dik.', arabic:'لدي اثنان من الإخوة.', english:'I have two siblings.', tip:'ada = يوجد / لدي، beradik = إخوة وأخوات'},
+            {malay:'Ibu saya sangat baik.', engPron:'EE-boo SAH-ya SAH-ngat BAH-ik.', arabic:'أمي طيبة جداً.', english:'My mother is very kind.', tip:'في الملايو الصفة تأتي بعد الاسم — ibu saya (أمي), baik (طيبة)'},
+          ],
+          grammar:[
+            {title:'📌 الضمائر — بسيطة جداً', body:'saya = أنا, awak/kamu = أنت (غير رسمي), anda = أنت (رسمي), dia = هو/هي, kami = نحن (يستثني المخاطب), kita = نحن (يشمل الجميع), mereka = هم/هن. لا فرق بين المذكر والمؤنث في الضمائر!', example:{malay:'Dia suka makan nasi.', pron:'DEE-ya SOO-ka MAH-kan NAH-see.', meaning:'هو/هي يحب/تحب أكل الأرز.'}},
+            {title:'📌 ملكية الأشياء — saya/dia/awak بعد الاسم', body:'للقول "أمي" تقول "ibu saya" (أم + أنا). "بيت أبي" = rumah bapa saya. الملكية تأتي بعد الاسم مباشرة.', example:{malay:'Rumah saya besar.', pron:'ROO-mah SAH-ya BEH-sar.', meaning:'بيتي كبير.'}},
+          ],
+          quizItems:[
+            {q:'ما معنى "ibu"؟', opts:['أب','جدة','أم','أخت'], ans:'أم'},
+            {q:'كيف تقول "صديق"؟', opts:['anak','kawan','suami','kakak'], ans:'kawan'},
+            {q:'ما معنى "saya"؟', opts:['أنت','هو','نحن','أنا'], ans:'أنا'},
+            {q:'كيف تقول "اسمي" بالملايو؟', opts:['saya ada...','saya suka...','nama saya...','saya nak...'], ans:'nama saya...'},
+          ]
+        },
+
+        { emoji:'⏰', title:'الوقت والأيام', desc:'Masa & hari — تعلم تحديد الوقت والتحدث عن الأيام', xp:70, done:false,
+          vocab:[
+            {malay:'hari ini',    engPron:'HAH-ree EE-nee',   arabic:'اليوم',        english:'today'},
+            {malay:'esok',        engPron:'EH-sok',            arabic:'غداً',          english:'tomorrow'},
+            {malay:'semalam',     engPron:'suh-MAH-lam',       arabic:'أمس',           english:'yesterday'},
+            {malay:'Isnin',       engPron:'IS-nin',            arabic:'الاثنين',       english:'Monday'},
+            {malay:'Selasa',      engPron:'suh-LAH-sah',       arabic:'الثلاثاء',      english:'Tuesday'},
+            {malay:'Rabu',        engPron:'RAH-boo',           arabic:'الأربعاء',      english:'Wednesday'},
+            {malay:'Khamis',      engPron:'KHA-mis',           arabic:'الخميس',        english:'Thursday'},
+            {malay:'Jumaat',      engPron:'JOO-mah-at',        arabic:'الجمعة',        english:'Friday'},
+            {malay:'Sabtu',       engPron:'SAB-too',           arabic:'السبت',         english:'Saturday'},
+            {malay:'Ahad',        engPron:'AH-had',            arabic:'الأحد',         english:'Sunday'},
+            {malay:'pagi',        engPron:'PAH-ghee',          arabic:'الصباح',        english:'morning'},
+            {malay:'petang',      engPron:'puh-TANG',          arabic:'العصر / المساء',english:'afternoon/evening'},
+            {malay:'malam',       engPron:'MAH-lam',           arabic:'الليل',         english:'night'},
+            {malay:'Pukul berapa?',engPron:'POO-kul buh-RAH-pa?',arabic:'كم الساعة؟', english:'What time is it?'},
+          ],
+          phrases:[
+            {malay:'Pukul berapa sekarang?', engPron:'POO-kul buh-RAH-pa suh-KAH-rang?', arabic:'كم الساعة الآن؟', english:'What time is it now?', tip:'sekarang = الآن، pukul = الساعة (للوقت)'},
+            {malay:'Pukul tiga petang.', engPron:'POO-kul TEE-gah puh-TANG.', arabic:'الساعة الثالثة مساءً.', english:'Three o\'clock in the afternoon.', tip:'الوقت: pukul + رقم + pagi/petang/malam'},
+            {malay:'Jumaat ini saya rehat.', engPron:'JOO-mah-at EE-nee SAH-ya ruh-HAT.', arabic:'هذا الجمعة أنا مرتاح.', english:'This Friday I am resting.', tip:'لاحظ أن أيام الأسبوع مأخوذة من العربية مثل الجمعة والخميس!'},
+          ],
+          grammar:[
+            {title:'📌 أيام الأسبوع — عربية الأصل!', body:'معظم أيام الأسبوع في الملايو مأخوذة من العربية! Khamis (خميس), Jumaat (جمعة), Sabtu (سبت), Ahad (أحد). هذا يسهل حفظها كثيراً!', example:{malay:'Hari ini Jumaat.', pron:'HAH-ree EE-nee JOO-mah-at.', meaning:'اليوم الجمعة.'}},
+            {title:'📌 sudah / belum / sedang', body:'sudah = قد فعل (already), belum = لم يفعل بعد (not yet), sedang = الآن يفعل (currently doing).', example:{malay:'Saya sudah makan.', pron:'SAH-ya SOO-dah MAH-kan.', meaning:'أنا قد أكلت (فعلت بالفعل).'}},
+          ],
+          quizItems:[
+            {q:'كيف تقول "غداً"؟', opts:['semalam','hari ini','esok','pagi'], ans:'esok'},
+            {q:'ما معنى "Jumaat"؟', opts:['الخميس','الجمعة','السبت','الأحد'], ans:'الجمعة'},
+            {q:'كيف تسأل "كم الساعة؟"', opts:['Apa ini?','Pukul berapa?','Di mana?','Berapa?'], ans:'Pukul berapa?'},
+            {q:'ما معنى "malam"؟', opts:['الصباح','الظهر','العصر','الليل'], ans:'الليل'},
+          ]
+        },
+
+        { emoji:'🏙️', title:'في المدينة والاتجاهات', desc:'Bandar — كيف تجد طريقك وتطلب المساعدة في ماليزيا', xp:75, done:false,
+          vocab:[
+            {malay:'di mana',     engPron:'dee MAH-nah',      arabic:'أين',              english:'where'},
+            {malay:'kanan',       engPron:'KAH-nan',           arabic:'يمين',             english:'right'},
+            {malay:'kiri',        engPron:'KEE-ree',           arabic:'يسار',             english:'left'},
+            {malay:'terus',       engPron:'tuh-RUS',           arabic:'على طول / أمام',  english:'straight'},
+            {malay:'dekat',       engPron:'duh-KAT',           arabic:'قريب',             english:'near'},
+            {malay:'jauh',        engPron:'JAH-uh',            arabic:'بعيد',             english:'far'},
+            {malay:'hospital',    engPron:'hos-PEE-tal',       arabic:'مستشفى',           english:'hospital'},
+            {malay:'balai polis', engPron:'BAH-lai POH-lis',   arabic:'مركز شرطة',       english:'police station'},
+            {malay:'stesen LRT',  engPron:'STEH-sen el-ar-tee',arabic:'محطة المترو',     english:'LRT station'},
+            {malay:'lapangan terbang',engPron:'lah-PAH-ngan TER-bang',arabic:'مطار',     english:'airport'},
+            {malay:'kedai',       engPron:'kuh-DAI',           arabic:'محل / دكان',      english:'shop'},
+            {malay:'pasar',       engPron:'PAH-sar',           arabic:'سوق',              english:'market'},
+            {malay:'tandas',      engPron:'TAN-das',           arabic:'حمام / مرحاض',   english:'toilet'},
+            {malay:'jalan',       engPron:'JAH-lan',           arabic:'طريق / شارع',     english:'road/street'},
+          ],
+          phrases:[
+            {malay:'Di mana tandas?', engPron:'dee MAH-nah TAN-das?', arabic:'أين الحمام؟', english:'Where is the toilet?', tip:'أهم جملة للمسافر! احفظها جيداً 😄'},
+            {malay:'Tolong tunjuk saya jalan ke...', engPron:'TOH-long TUN-juk SAH-ya JAH-lan kuh...', arabic:'من فضلك أرشدني الطريق إلى...', english:'Please show me the way to...', tip:'tunjuk = يُري / يُرشد، jalan ke = الطريق إلى'},
+            {malay:'Berapa jauh dari sini?', engPron:'buh-RAH-pa JAH-uh DAH-ree SEE-nee?', arabic:'كم المسافة من هنا؟', english:'How far from here?', tip:'dari sini = من هنا، sana = هناك'},
+            {malay:'Belok kanan, kemudian terus.', engPron:'buh-LOK KAH-nan, kuh-MOO-dee-an tuh-RUS.', arabic:'انعطف يميناً، ثم على طول.', english:'Turn right, then go straight.', tip:'belok = انعطف، kemudian = ثم'},
+          ],
+          grammar:[
+            {title:'📌 di, ke, dari — حروف الجر', body:'"di" = في (للمكان), "ke" = إلى, "dari" = من. بسيطة وثابتة لا تتغير: di kedai (في المحل), ke hospital (إلى المستشفى), dari sini (من هنا).', example:{malay:'Saya pergi ke pasar.', pron:'SAH-ya puh-REE-ghee kuh PAH-sar.', meaning:'أنا ذاهب إلى السوق.'}},
+          ],
+          quizItems:[
+            {q:'ما معنى "kanan"؟', opts:['يسار','أمام','يمين','خلف'], ans:'يمين'},
+            {q:'كيف تقول "أين"؟', opts:['berapa','apa','siapa','di mana'], ans:'di mana'},
+            {q:'ما معنى "dekat"؟', opts:['بعيد','كبير','قريب','صغير'], ans:'قريب'},
+            {q:'كيف تقول "سوق"؟', opts:['jalan','pasar','kedai','tandas'], ans:'pasar'},
+          ]
+        },
+
+        { emoji:'🌈', title:'الألوان والصفات', desc:'Warna & sifat — الألوان والصفات الأساسية لوصف الأشياء', xp:50, done:false,
+          vocab:[
+            {malay:'merah',      engPron:'muh-RAH',       arabic:'أحمر',    english:'red'},
+            {malay:'biru',       engPron:'BEE-roo',       arabic:'أزرق',    english:'blue'},
+            {malay:'hijau',      engPron:'HEE-jow',       arabic:'أخضر',    english:'green'},
+            {malay:'kuning',     engPron:'KOO-ning',      arabic:'أصفر',    english:'yellow'},
+            {malay:'putih',      engPron:'POO-tih',       arabic:'أبيض',    english:'white'},
+            {malay:'hitam',      engPron:'HEE-tam',       arabic:'أسود',    english:'black'},
+            {malay:'jingga',     engPron:'JING-gah',      arabic:'برتقالي', english:'orange'},
+            {malay:'ungu',       engPron:'OO-ngoo',       arabic:'بنفسجي',  english:'purple'},
+            {malay:'besar',      engPron:'buh-SAR',       arabic:'كبير',    english:'big'},
+            {malay:'kecil',      engPron:'kuh-CHIL',      arabic:'صغير',    english:'small'},
+            {malay:'cantik',     engPron:'CHAN-tik',       arabic:'جميل',    english:'beautiful'},
+            {malay:'lama / baru',engPron:'LAH-mah / BAH-roo',arabic:'قديم / جديد',english:'old/new'},
+            {malay:'panjang',    engPron:'PAN-jang',      arabic:'طويل',    english:'long/tall'},
+            {malay:'pendek',     engPron:'PEN-dek',       arabic:'قصير',    english:'short'},
+          ],
+          phrases:[
+            {malay:'Baju ini warna apa?', engPron:'BAH-joo EE-nee WAR-nah AH-pah?', arabic:'ما لون هذا الثوب؟', english:'What color is this shirt?', tip:'baju = ملابس، warna = لون، apa = ماذا/ما'},
+            {malay:'Rumah saya besar dan cantik.', engPron:'ROO-mah SAH-ya buh-SAR dan CHAN-tik.', arabic:'بيتي كبير وجميل.', english:'My house is big and beautiful.', tip:'dan = و (مثل and)'},
+          ],
+          grammar:[
+            {title:'📌 لا يوجد جنس في الألوان!', body:'على عكس العربية والإسبانية، الصفات في الملايو لا تتغير مع المذكر أو المؤنث أو الجمع. baju merah (ثوب أحمر), kereta merah (سيارة حمراء), seluar merah (بنطلون أحمر) — نفس الكلمة دائماً!', example:{malay:'Kereta itu merah.', pron:'kuh-REH-tah EE-too muh-RAH.', meaning:'تلك السيارة حمراء.'}},
+            {title:'📌 الصفة تأتي بعد الاسم', body:'في الملايو الصفة تأتي بعد الاسم: rumah besar (بيت كبير = literally: house big), baju baru (ثوب جديد). مثل العربية الفصحى في هذا!', example:{malay:'Kasut putih.', pron:'KAH-sut POO-tih.', meaning:'حذاء أبيض.'}},
+          ],
+          quizItems:[
+            {q:'كيف تقول "أحمر"؟', opts:['biru','hijau','merah','kuning'], ans:'merah'},
+            {q:'ما معنى "besar"؟', opts:['صغير','كبير','جديد','جميل'], ans:'كبير'},
+            {q:'كيف تقول "أصفر"؟', opts:['putih','hitam','jingga','kuning'], ans:'kuning'},
+            {q:'ما معنى "cantik"؟', opts:['قبيح','قديم','جميل','كبير'], ans:'جميل'},
+          ]
+        },
+
+        { emoji:'🗣️', title:'الأفعال والجمل اليومية', desc:'Kata kerja — أهم الأفعال لتكوين جمل كاملة', xp:85, done:false,
+          vocab:[
+            {malay:'pergi',      engPron:'puh-REE-ghee',  arabic:'يذهب',          english:'to go'},
+            {malay:'datang',     engPron:'DAH-tang',       arabic:'يأتي',           english:'to come'},
+            {malay:'makan',      engPron:'MAH-kan',        arabic:'يأكل',           english:'to eat'},
+            {malay:'minum',      engPron:'MEE-num',        arabic:'يشرب',           english:'to drink'},
+            {malay:'tidur',      engPron:'TEE-dur',        arabic:'ينام',           english:'to sleep'},
+            {malay:'bangun',     engPron:'BAH-ngoon',      arabic:'يستيقظ',         english:'to wake up'},
+            {malay:'bekerja',    engPron:'buh-KER-jah',    arabic:'يعمل',           english:'to work'},
+            {malay:'belajar',    engPron:'buh-LAH-jar',    arabic:'يتعلم / يدرس',  english:'to study/learn'},
+            {malay:'berbicara',  engPron:'ber-BEE-cha-rah',arabic:'يتحدث',          english:'to speak'},
+            {malay:'suka',       engPron:'SOO-kah',        arabic:'يحب / يعجبه',   english:'to like'},
+            {malay:'boleh',      engPron:'BOH-lay',        arabic:'يستطيع / يمكن', english:'can/may'},
+            {malay:'tahu',       engPron:'TAH-hoo',        arabic:'يعرف',           english:'to know'},
+            {malay:'faham',      engPron:'FAH-ham',        arabic:'يفهم',           english:'to understand'},
+            {malay:'beli',       engPron:'buh-LEE',        arabic:'يشتري',          english:'to buy'},
+          ],
+          phrases:[
+            {malay:'Saya tidak faham.', engPron:'SAH-ya TEE-dak FAH-ham.', arabic:'أنا لا أفهم.', english:'I don\'t understand.', tip:'tidak = لا (للنفي مع الأفعال والصفات)'},
+            {malay:'Boleh awak cakap perlahan?', engPron:'BOH-lay AH-wak CHAH-kap per-LAH-han?', arabic:'هل يمكنك التحدث ببطء؟', english:'Can you speak slowly?', tip:'cakap = يتكلم (بديل عن berbicara غير الرسمي), perlahan = ببطء'},
+            {malay:'Saya suka belajar Bahasa Melayu!', engPron:'SAH-ya SOO-kah buh-LAH-jar BAH-hah-sah muh-LAH-yoo!', arabic:'أنا أحب تعلم اللغة الملايو!', english:'I love learning Malay!', tip:'جملة رائعة تقولها لأي ماليزي — سيكونون سعداء جداً!'},
+            {malay:'Saya tidak tahu.', engPron:'SAH-ya TEE-dak TAH-hoo.', arabic:'أنا لا أعرف.', english:'I don\'t know.', tip:'tidak = نفي الأفعال، bukan = نفي الأسماء والصفات'},
+          ],
+          grammar:[
+            {title:'📌 النفي — tidak vs bukan', body:'"tidak" للنفي مع الأفعال والصفات: Saya tidak makan (لا آكل). "bukan" للنفي مع الأسماء: Ini bukan kereta (هذه ليست سيارة). هذا الفرق مهم!', example:{malay:'Ini bukan buku saya.', pron:'EE-nee BOO-kan BOO-koo SAH-ya.', meaning:'هذا ليس كتابي.'}},
+            {title:'📌 boleh — الفعل السحري', body:'"boleh" يعني "يمكن / يستطيع" ويُستخدم كثيراً. Boleh saya...? = هل يمكنني...؟. Boleh! = بالتأكيد! Tidak boleh = لا يجوز/ممنوع.', example:{malay:'Boleh saya duduk di sini?', pron:'BOH-lay SAH-ya DOO-duk dee SEE-nee?', meaning:'هل يمكنني الجلوس هنا؟'}},
+          ],
+          quizItems:[
+            {q:'ما معنى "faham"؟', opts:['يعرف','يريد','يفهم','يذهب'], ans:'يفهم'},
+            {q:'كيف تقول "لا أعرف"؟', opts:['Saya suka','Saya tidak tahu','Saya faham','Saya boleh'], ans:'Saya tidak tahu'},
+            {q:'ما معنى "boleh"؟', opts:['يريد','لا يستطيع','يمكن/يستطيع','لا يعرف'], ans:'يمكن/يستطيع'},
+            {q:'كيف تقول "يتعلم"؟', opts:['tidur','makan','pergi','belajar'], ans:'belajar'},
+          ]
+        },
+      ],
+
+      flashcards: [
+        {malay:'Selamat datang', engPron:'suh-LAH-mat DAH-tang',   arabic:'أهلاً وسهلاً',     english:'Welcome',           category:'تحيات'},
+        {malay:'Terima kasih',   engPron:'tuh-REE-mah KAH-see',    arabic:'شكراً',              english:'Thank you',         category:'تحيات'},
+        {malay:'Maaf',           engPron:'MAH-af',                  arabic:'آسف / معذرة',       english:'Sorry',             category:'تحيات'},
+        {malay:'Ya',             engPron:'YAH',                     arabic:'نعم',                english:'Yes',               category:'أساسيات'},
+        {malay:'Tidak',          engPron:'TEE-dak',                 arabic:'لا',                 english:'No',                category:'أساسيات'},
+        {malay:'Boleh',          engPron:'BOH-lay',                 arabic:'يمكن / نعم',        english:'Can / Okay',        category:'أساسيات'},
+        {malay:'Tolong',         engPron:'TOH-long',                arabic:'من فضلك / ساعدني', english:'Please / Help',     category:'أساسيات'},
+        {malay:'satu',           engPron:'SAH-too',                 arabic:'واحد',               english:'1',                 category:'أرقام'},
+        {malay:'dua',            engPron:'DOO-ah',                  arabic:'اثنان',              english:'2',                 category:'أرقام'},
+        {malay:'lima',           engPron:'LEE-mah',                 arabic:'خمسة',               english:'5',                 category:'أرقام'},
+        {malay:'sepuluh',        engPron:'suh-POO-luh',             arabic:'عشرة',               english:'10',                category:'أرقام'},
+        {malay:'nasi',           engPron:'NAH-see',                 arabic:'أرز',                english:'rice',              category:'طعام'},
+        {malay:'air',            engPron:'AH-yer',                  arabic:'ماء',                english:'water',             category:'طعام'},
+        {malay:'sedap',          engPron:'suh-DAP',                 arabic:'لذيذ',               english:'delicious',         category:'طعام'},
+        {malay:'pedas',          engPron:'puh-DAS',                 arabic:'حار',                english:'spicy',             category:'طعام'},
+        {malay:'kopi',           engPron:'KOH-pee',                 arabic:'قهوة',               english:'coffee',            category:'طعام'},
+        {malay:'ibu',            engPron:'EE-boo',                  arabic:'أم',                 english:'mother',            category:'عائلة'},
+        {malay:'bapa',           engPron:'BAH-pah',                 arabic:'أب',                 english:'father',            category:'عائلة'},
+        {malay:'kawan',          engPron:'KAH-wan',                 arabic:'صديق',               english:'friend',            category:'عائلة'},
+        {malay:'hari ini',       engPron:'HAH-ree EE-nee',          arabic:'اليوم',              english:'today',             category:'وقت'},
+        {malay:'esok',           engPron:'EH-sok',                  arabic:'غداً',               english:'tomorrow',          category:'وقت'},
+        {malay:'Jumaat',         engPron:'JOO-mah-at',              arabic:'الجمعة',             english:'Friday',            category:'وقت'},
+        {malay:'merah',          engPron:'muh-RAH',                 arabic:'أحمر',               english:'red',               category:'ألوان'},
+        {malay:'biru',           engPron:'BEE-roo',                 arabic:'أزرق',               english:'blue',              category:'ألوان'},
+        {malay:'hijau',          engPron:'HEE-jow',                 arabic:'أخضر',               english:'green',             category:'ألوان'},
+        {malay:'putih',          engPron:'POO-tih',                 arabic:'أبيض',               english:'white',             category:'ألوان'},
+        {malay:'di mana',        engPron:'dee MAH-nah',             arabic:'أين',                english:'where',             category:'مكان'},
+        {malay:'kanan',          engPron:'KAH-nan',                 arabic:'يمين',               english:'right',             category:'مكان'},
+        {malay:'kiri',           engPron:'KEE-ree',                 arabic:'يسار',               english:'left',              category:'مكان'},
+        {malay:'dekat',          engPron:'duh-KAT',                 arabic:'قريب',               english:'near',              category:'مكان'},
+        {malay:'besar',          engPron:'buh-SAR',                 arabic:'كبير',               english:'big',               category:'صفات'},
+        {malay:'cantik',         engPron:'CHAN-tik',                 arabic:'جميل',               english:'beautiful',         category:'صفات'},
+        {malay:'saya',           engPron:'SAH-ya',                  arabic:'أنا',                english:'I / me',            category:'ضمائر'},
+        {malay:'awak',           engPron:'AH-wak',                  arabic:'أنت (غير رسمي)',     english:'you (informal)',     category:'ضمائر'},
+        {malay:'dia',            engPron:'DEE-yah',                 arabic:'هو / هي',            english:'he / she',          category:'ضمائر'},
+        {malay:'makan',          engPron:'MAH-kan',                 arabic:'يأكل',               english:'to eat',            category:'أفعال'},
+        {malay:'pergi',          engPron:'puh-REE-ghee',            arabic:'يذهب',               english:'to go',             category:'أفعال'},
+        {malay:'belajar',        engPron:'buh-LAH-jar',             arabic:'يتعلم',              english:'to learn',          category:'أفعال'},
+        {malay:'faham',          engPron:'FAH-ham',                 arabic:'يفهم',               english:'to understand',     category:'أفعال'},
+        {malay:'suka',           engPron:'SOO-kah',                 arabic:'يحب / يعجبه',       english:'to like',           category:'أفعال'},
+      ],
+
+      allQ: [
+        {q:'كيف تقول "شكراً" بالملايو؟', opts:['Selamat pagi','Terima kasih','Sama-sama','Jumpa lagi'], ans:'Terima kasih'},
+        {q:'ما معنى "Apa khabar"؟', opts:['صباح الخير','مع السلامة','كيف حالك؟','شكراً'], ans:'كيف حالك؟'},
+        {q:'ما معنى "lima"؟', opts:['3','4','5','6'], ans:'5'},
+        {q:'كيف تقول "أريد" (غير رسمي)؟', opts:['boleh','nak','tolong','ada'], ans:'nak'},
+        {q:'ما معنى "air"؟', opts:['شاي','قهوة','ماء','عصير'], ans:'ماء'},
+        {q:'كيف تقول "أحمر"؟', opts:['biru','hijau','merah','kuning'], ans:'merah'},
+        {q:'ما معنى "ibu"؟', opts:['أب','جدة','أم','أخت'], ans:'أم'},
+        {q:'كيف تقول "أين"؟', opts:['berapa','apa','siapa','di mana'], ans:'di mana'},
+        {q:'ما معنى "faham"؟', opts:['يعرف','يريد','يفهم','يذهب'], ans:'يفهم'},
+        {q:'كيف تقول "غداً"؟', opts:['semalam','hari ini','esok','pagi'], ans:'esok'},
+        {q:'ما معنى "sedap"؟', opts:['حار','لذيذ','حامض','جائع'], ans:'لذيذ'},
+        {q:'كيف تقول "كبير"؟', opts:['kecil','cantik','besar','panjang'], ans:'besar'},
+        {q:'ما معنى "kawan"؟', opts:['عدو','غريب','صديق','جار'], ans:'صديق'},
+        {q:'كيف تقول "يمين"؟', opts:['kiri','terus','kanan','belok'], ans:'kanan'},
+        {q:'ما نطق كلمة "Terima kasih"؟', opts:['TAY-ree-mah KAH-zee','tuh-REE-mah KAH-see','teh-REE-mah KAH-sih','TAH-ree-mah KAH-soo'], ans:'tuh-REE-mah KAH-see'},
+        {q:'كيف تقول "لا أفهم"؟', opts:['Saya suka','Saya tidak faham','Saya faham','Saya boleh'], ans:'Saya tidak faham'},
+        {q:'ما معنى "boleh"؟', opts:['يريد','لا يستطيع','يمكن/يستطيع','لا يعرف'], ans:'يمكن/يستطيع'},
+        {q:'كيف تقول "الجمعة"؟', opts:['Khamis','Jumaat','Sabtu','Ahad'], ans:'Jumaat'},
+        {q:'ما معنى "cantik"؟', opts:['قبيح','قديم','جميل','كبير'], ans:'جميل'},
+        {q:'ما معنى "dekat"؟', opts:['بعيد','كبير','قريب','صغير'], ans:'قريب'},
+      ],
+
+      pronGuide: [
+        {
+          title:'🔤 الحروف الصائتة (Vowels)',
+          items:[
+            {letter:'A', sound:'آ — مثل "star" بالإنجليزي، مش "A" العادية', example:'bapa (باب-آ) = أب', tip:'دائماً آ، لا تنطق أي'},
+            {letter:'E', sound:'ə — صوت ضعيف مثل "uh" في "the"', example:'emak (uh-MAK) = أم', tip:'في بعض الكلمات مثل EH — sebelas'},
+            {letter:'I', sound:'إي — مثل "see" بالإنجليزي', example:'ini (EE-nee) = هذا'},
+            {letter:'O', sound:'أو — مثل "go" بالإنجليزي', example:'kopi (KOH-pee) = قهوة'},
+            {letter:'U', sound:'أو — مثل "too" بالإنجليزي', example:'buku (BOO-koo) = كتاب'},
+          ]
+        },
+        {
+          title:'🔤 الحروف الخاصة (Special Consonants)',
+          items:[
+            {letter:'G', sound:'دائماً G صلبة مثل "go" — لا تُنطق J أبداً', example:'goreng (goh-RENG) = مقلي', tip:'مثل get وgame وgold'},
+            {letter:'R', sound:'R مدورة خفيفة مثل الإسبانية — ليست مثل الإنجليزية', example:'rumah (ROO-mah) = بيت'},
+            {letter:'C', sound:'دائماً CH مثل "chair"', example:'cakap (CHAH-kap) = يتكلم', tip:'لا توجد C تُنطق K في الملايو'},
+            {letter:'NY', sound:'نيـ — مثل "canyon" بالإنجليزي', example:'banyak (BAH-nyak) = كثير'},
+            {letter:'NG', sound:'نگ — مثل "sing" بالإنجليزي', example:'senang (suh-NANG) = سهل / سعيد'},
+            {letter:'SY', sound:'شـ — مثل "sh" في شـ', example:'syarikat (sha-REE-kat) = شركة', tip:'كلمات عربية الأصل عادةً'},
+            {letter:'KH', sound:'خـ — مثل الخاء العربية تماماً!', example:'khabar (KHA-bar) = خبر', tip:'مأخوذة من العربية — سهلة عليك!'},
+            {letter:'K (نهاية)', sound:'K في آخر الكلمة تُنطق بشكل مخفف وقفي', example:'budak (BOO-dak) = ولد صغير', tip:'مثل "k" في "book" عندما تقف'},
+          ]
+        },
+        {
+          title:'✅ الحروف الطبيعية (Same as English)',
+          items:[
+            {letter:'B, D, F, H', sound:'تماماً مثل الإنجليزية', example:'baru, datang, faham, hari'},
+            {letter:'J', sound:'مثل "j" في "job"', example:'jalan (JAH-lan) = طريق'},
+            {letter:'L, M, N', sound:'تماماً مثل الإنجليزية', example:'lama, makan, nama'},
+            {letter:'P, T', sound:'بدون نفخ هواء — أهدأ من الإنجليزية', example:'pagi, tolong'},
+            {letter:'S', sound:'دائماً S صافية، لا Z أبداً', example:'saya, sedap'},
+            {letter:'W, Y', sound:'تماماً مثل الإنجليزية', example:'waktu, yang'},
+            {letter:'Z', sound:'مثل Z الإنجليزية، في كلمات مأخوذة من العربية', example:'zaman (ZAH-man) = زمان'},
+          ]
+        }
+      ],
+
+      pronPractice: [
+        {malay:'Saya suka makan nasi goreng.', pron:'SAH-ya SOO-kah MAH-kan NAH-see goh-RENG.', arabic:'أنا أحب أكل الأرز المقلي.'},
+        {malay:'Selamat pagi, apa khabar?', pron:'suh-LAH-mat PAH-ghee, AH-pa KHA-bar?', arabic:'صباح الخير، كيف حالك؟'},
+        {malay:'Tolong bagi saya air sejuk.', pron:'TOH-long BAH-ghee SAH-ya AH-yer suh-JUK.', arabic:'من فضلك أعطني ماء بارداً.'},
+        {malay:'Di mana tandas yang berdekatan?', pron:'dee MAH-nah TAN-das yang ber-duh-KAH-tan?', arabic:'أين أقرب حمام؟'},
+        {malay:'Boleh saya cakap dengan perlahan?', pron:'BOH-lay SAH-ya CHAH-kap duh-NGAN per-LAH-han?', arabic:'هل يمكنني التحدث ببطء؟'},
+      ],
+
+      phrasebook: [
+        {
+          icon:'🛍️', title:'التسوق والسعر',
+          phrases:[
+            {malay:'Berapa harga ini?', pron:'buh-RAH-pa HAR-gah EE-nee?', arabic:'كم سعر هذا؟', english:'How much is this?', tip:'هذه ستكون أكثر جملة تستخدمها في ماليزيا!'},
+            {malay:'Mahal sangat. Boleh kurang?', pron:'MAH-hal SAH-ngat. BOH-lay KOO-rang?', arabic:'غالي جداً. هل يمكن أقل؟', english:'Too expensive. Can it be cheaper?', tip:'mahal = غالي، murah = رخيص، kurang = أقل'},
+            {malay:'Saya nak beli ini.', pron:'SAH-ya nak buh-LEE EE-nee.', arabic:'أريد شراء هذا.', english:'I want to buy this.'},
+            {malay:'Ada tak yang lain?', pron:'AH-dah tak yang LAH-in?', arabic:'هل يوجد غيره؟', english:'Is there another one?', tip:'ada tak = هل يوجد؟ — طريقة السؤال السريعة'},
+          ]
+        },
+        {
+          icon:'🏥', title:'الطوارئ والصحة',
+          phrases:[
+            {malay:'Tolong! Saya perlukan bantuan!', pron:'TOH-long! SAH-ya per-LOO-kan ban-TOO-an!', arabic:'ساعدوني! أحتاج مساعدة!', english:'Help! I need help!'},
+            {malay:'Saya tidak sihat.', pron:'SAH-ya TEE-dak SEE-hat.', arabic:'أنا مريض/مريضة.', english:'I am not well.', tip:'sihat = بصحة جيدة، tidak sihat = مريض'},
+            {malay:'Panggil ambulans!', pron:'PANG-gil AM-boo-lans!', arabic:'اتصل بالإسعاف!', english:'Call an ambulance!'},
+            {malay:'Di mana hospital terdekat?', pron:'dee MAH-nah hos-PEE-tal ter-duh-KAT?', arabic:'أين أقرب مستشفى؟', english:'Where is the nearest hospital?'},
+          ]
+        },
+        {
+          icon:'🏨', title:'الفندق والسفر',
+          phrases:[
+            {malay:'Saya ada tempahan.', pron:'SAH-ya AH-dah tem-PAH-han.', arabic:'لدي حجز.', english:'I have a reservation.', tip:'tempahan = حجز'},
+            {malay:'Bilik saya tidak bersih.', pron:'BEE-lik SAH-ya TEE-dak ber-SEE.', arabic:'غرفتي ليست نظيفة.', english:'My room is not clean.', tip:'bilik = غرفة، bersih = نظيف'},
+            {malay:'Boleh saya check in sekarang?', pron:'BOH-lay SAH-ya check in suh-KAH-rang?', arabic:'هل يمكنني تسجيل الدخول الآن؟', english:'Can I check in now?'},
+            {malay:'Naik teksi ke lapangan terbang berapa?', pron:'NAH-ik TEK-see kuh lah-PAH-ngan TER-bang buh-RAH-pa?', arabic:'بكم التاكسي إلى المطار؟', english:'How much is a taxi to the airport?'},
+          ]
+        },
+        {
+          icon:'🤝', title:'التعارف والتواصل',
+          phrases:[
+            {malay:'Nama saya ____. Nama awak?', pron:'NAH-mah SAH-ya ____. NAH-mah AH-wak?', arabic:'اسمي ____. ما اسمك؟', english:'My name is ____. What is your name?'},
+            {malay:'Saya dari Arab Saudi.', pron:'SAH-ya DAH-ree AH-rab SAW-dee.', arabic:'أنا من المملكة العربية السعودية.', english:'I am from Saudi Arabia.', tip:'من = dari، مدينة أو دولة بعدها مباشرة'},
+            {malay:'Saya belajar Bahasa Melayu.', pron:'SAH-ya buh-LAH-jar BAH-hah-sah muh-LAH-yoo.', arabic:'أنا أتعلم اللغة الملايو.', english:'I am learning Malay.', tip:'هذه الجملة ستجعل أي ماليزي يبتسم!'},
+            {malay:'Awak boleh ajar saya?', pron:'AH-wak BOH-lay AH-jar SAH-ya?', arabic:'هل يمكنك تعليمي؟', english:'Can you teach me?', tip:'ajar = يُعلّم — طريقة ممتازة لممارسة اللغة مع الناطقين بها'},
+          ]
+        },
+        {
+          icon:'🍽️', title:'المطعم والطعام',
+          phrases:[
+            {malay:'Meja untuk dua orang.', pron:'MEH-jah OON-tuk DOO-ah OH-rang.', arabic:'طاولة لشخصين.', english:'Table for two.', tip:'orang = شخص، meja = طاولة'},
+            {malay:'Saya vegetarian.', pron:'SAH-ya veh-juh-TEH-ree-an.', arabic:'أنا نباتي.', english:'I am vegetarian.'},
+            {malay:'Tak pedas, ya!', pron:'TAK puh-DAS, ya!', arabic:'بدون حار من فضلك!', english:'Not spicy, please!', tip:'tak = tidak = لا — الشكل المختصر في الحديث'},
+            {malay:'Boleh bungkus?', pron:'BOH-lay BUNG-kus?', arabic:'هل يمكن أخذه معي؟', english:'Can I take it away?', tip:'bungkus = يلف / يعبئ — للطلب خارج المطعم'},
+          ]
+        },
+      ],
+
+      shuffledQ: [],
+
+      init() {
+        const saved = localStorage.getItem('malayAppData');
+        if (saved) {
+          const d = JSON.parse(saved);
+          this.xp = d.xp || 0;
+          this.streak = d.streak || 1;
+          this.learnedWords = d.learnedWords || 0;
+          this.lessons.forEach((l,i) => { if (d.done && d.done[i]) l.done = true; });
+        }
+        this.shuffledQ = [...this.allQ].sort(() => Math.random() - 0.5);
+      },
+
+      save() {
+        localStorage.setItem('malayAppData', JSON.stringify({
+          xp: this.xp, streak: this.streak, learnedWords: this.learnedWords,
+          done: this.lessons.map(l => l.done)
+        }));
+      },
+
+      openLesson(lesson) {
+        this.activeLessonModal = lesson;
+        this.lessonTab = 'vocab';
+        this.lQuizDone = false;
+        this.lAnswered = false;
+      },
+
+      setupLessonQuiz() {
+        this.lessonQuizQ = [...(this.activeLessonModal?.quizItems||[])].sort(()=>Math.random()-0.5);
+        this.lQuizIdx = 0; this.lScore = 0;
+        this.lAnswered = false; this.lChosen = ''; this.lQuizDone = false;
+      },
+
+      answerLQ(opt) {
+        this.lAnswered = true; this.lChosen = opt;
+        this.lCorrect = opt === this.lessonQuizQ[this.lQuizIdx].ans;
+        if (this.lCorrect) this.lScore++;
+      },
+
+      nextLQ() {
+        if (this.lQuizIdx < this.lessonQuizQ.length - 1) {
+          this.lQuizIdx++; this.lAnswered = false; this.lChosen = '';
+        } else {
+          this.lQuizDone = true;
+          if (this.lScore === this.lessonQuizQ.length) { this.showConfetti = true; setTimeout(()=>this.showConfetti=false,3500); }
+        }
+      },
+
+      completeLesson() {
+        if (!this.activeLessonModal.done) {
+          this.activeLessonModal.done = true;
+          this.xp += this.activeLessonModal.xp;
+          this.learnedWords += this.activeLessonModal.vocab?.length || 0;
+          this.showConfetti = true;
+          setTimeout(() => this.showConfetti = false, 3500);
+          this.save();
+        }
+        this.activeLessonModal = null;
+      },
+
+      resetQuiz() {
+        this.quizActive = false; this.quizFinished = false;
+      },
+
+      startFullQuiz() {
+        this.shuffledQ = [...this.allQ].sort(()=>Math.random()-0.5);
+        this.qIdx = 0; this.qScore = 0; this.qAnswered = false;
+        this.qChosen = ''; this.quizActive = true; this.quizFinished = false;
+      },
+
+      answerQ(opt) {
+        this.qAnswered = true; this.qChosen = opt;
+        this.qCorrect = opt === this.shuffledQ[this.qIdx].ans;
+        if (this.qCorrect) this.qScore++;
+      },
+
+      nextQ() {
+        if (this.qIdx < this.shuffledQ.length - 1) {
+          this.qIdx++; this.qAnswered = false; this.qChosen = '';
+        } else {
+          this.quizActive = false; this.quizFinished = true;
+          this.xp += this.qScore * 10;
+          if (this.qScore === this.shuffledQ.length) { this.showConfetti = true; setTimeout(()=>this.showConfetti=false,3500); }
+          this.save();
+        }
+      },
+    };
+  }
+  </script>
+</body>
+</html>
