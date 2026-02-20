@@ -312,6 +312,32 @@
     .word-chip .w-pron { color: #60a5fa; font-family: 'Inter'; font-size: 11px; font-style: italic; }
     .word-chip .w-ar { color: var(--text-muted); font-size: 12px; margin-top: 1px; }
 
+    /* === SPEAK BUTTON === */
+    .speak-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 17px; padding: 4px 6px; border-radius: 8px;
+      transition: all 0.18s; display: inline-flex; align-items: center;
+      justify-content: center; color: var(--text-muted); line-height: 1;
+    }
+    .speak-btn:hover { background: rgba(255,255,255,0.08); color: white; transform: scale(1.15); }
+    .speak-btn.speaking { color: var(--gold); animation: speakPulse 0.6s ease infinite alternate; }
+    @keyframes speakPulse { from { transform: scale(1); } to { transform: scale(1.25); } }
+
+    .speak-btn-lg {
+      background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.25);
+      border-radius: 10px; padding: 7px 14px; cursor: pointer; font-size: 15px;
+      color: var(--gold); font-family: 'Tajawal', sans-serif; font-weight: 600;
+      transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .speak-btn-lg:hover { background: rgba(255,215,0,0.2); transform: scale(1.05); }
+    .speak-btn-lg.speaking { background: rgba(255,215,0,0.25); animation: speakPulse 0.6s ease infinite alternate; }
+
+    /* TTS not available notice */
+    .tts-notice {
+      font-size: 11px; color: var(--text-muted); text-align: center;
+      padding: 6px; background: rgba(255,255,255,0.03); border-radius: 8px;
+    }
+
     @media (max-width: 1024px) { .sidebar { width: 220px; } .stats-row { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 768px) {
       .app-wrapper { flex-direction: column; }
@@ -493,9 +519,11 @@
 
             <!-- VOCAB TAB -->
             <div x-show="lessonTab==='vocab'">
+              <div x-show="!ttsAvailable" class="tts-notice" style="margin-bottom:10px;">⚠️ متصفحك لا يدعم الصوت — جرب Chrome أو Edge</div>
               <table class="vocab-table">
                 <thead>
                   <tr>
+                    <th>🔊</th>
                     <th>الملايو</th>
                     <th>النطق بالإنجليزي</th>
                     <th>العربي</th>
@@ -505,6 +533,9 @@
                 <tbody>
                   <template x-for="v in activeLessonModal?.vocab" :key="v.malay">
                     <tr>
+                      <td style="width:44px;">
+                        <button class="speak-btn" :class="{speaking: speakingText===v.malay}" @click.stop="speak(v.malay)" title="استمع">🔊</button>
+                      </td>
                       <td class="col-malay" x-text="v.malay"></td>
                       <td class="col-eng-pron" x-text="v.engPron"></td>
                       <td class="col-arabic" x-text="v.arabic"></td>
@@ -519,7 +550,10 @@
             <div x-show="lessonTab==='phrases'">
               <template x-for="p in activeLessonModal?.phrases" :key="p.malay">
                 <div class="phrase-card">
-                  <div class="phrase-malay" x-text="p.malay"></div>
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+                    <div class="phrase-malay" x-text="p.malay" style="flex:1;"></div>
+                    <button class="speak-btn-lg" :class="{speaking: speakingText===p.malay}" @click.stop="speak(p.malay)">🔊 استمع</button>
+                  </div>
                   <div class="phrase-pron" x-text="'🔤 '+p.engPron"></div>
                   <div class="phrase-arabic" x-text="p.arabic"></div>
                   <div class="phrase-english" x-text="p.english"></div>
@@ -534,10 +568,11 @@
                 <div class="grammar-note">
                   <h4 x-text="g.title"></h4>
                   <p x-text="g.body"></p>
-                  <div x-show="g.example" style="margin-top:12px;padding:10px 14px;background:rgba(255,255,255,0.04);border-radius:10px;font-family:'Inter';font-size:13px;">
+                  <div x-show="g.example" style="margin-top:12px;padding:10px 14px;background:rgba(255,255,255,0.04);border-radius:10px;font-family:'Inter';font-size:13px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                     <span style="color:var(--gold-light);font-weight:700;" x-text="g.example?.malay"></span>
-                    <span style="color:#60a5fa;font-style:italic;margin-right:10px;margin-left:10px;" x-text="g.example?.pron"></span>
+                    <span style="color:#60a5fa;font-style:italic;" x-text="g.example?.pron"></span>
                     <span style="color:var(--text-muted);" x-text="'— '+g.example?.meaning"></span>
+                    <button class="speak-btn" :class="{speaking: speakingText===g.example?.malay}" @click.stop="speak(g.example?.malay)" style="margin-right:auto;" title="استمع">🔊</button>
                   </div>
                 </div>
               </template>
@@ -609,21 +644,28 @@
                 <span class="card-cat" x-text="filteredCards[fcIdx]?.category"></span>
                 <span class="card-word" style="color:var(--gold-light);font-family:'Inter';" x-text="filteredCards[fcIdx]?.malay"></span>
                 <span class="card-pron" x-text="filteredCards[fcIdx]?.engPron"></span>
-                <span class="card-hint">انقر للترجمة 👆</span>
+                <button class="speak-btn-lg" :class="{speaking: speakingText===filteredCards[fcIdx]?.malay}"
+                  @click.stop="speak(filteredCards[fcIdx]?.malay)" style="margin-top:4px;">
+                  🔊 استمع
+                </button>
               </div>
               <div class="flashcard-back">
                 <span class="card-cat" x-text="filteredCards[fcIdx]?.category"></span>
                 <span class="card-word" style="color:white;" x-text="filteredCards[fcIdx]?.arabic"></span>
                 <span style="font-family:'Inter';color:#60a5fa;font-size:14px;font-style:italic;" x-text="filteredCards[fcIdx]?.engPron"></span>
                 <span style="font-family:'Inter';color:var(--text-muted);font-size:13px;" x-text="filteredCards[fcIdx]?.english"></span>
+                <button class="speak-btn-lg" :class="{speaking: speakingText===filteredCards[fcIdx]?.malay}"
+                  @click.stop="speak(filteredCards[fcIdx]?.malay)" style="margin-top:4px;">
+                  🔊 استمع بالملايو
+                </button>
               </div>
             </div>
           </div>
 
           <div class="flashcard-controls">
-            <button class="btn btn-secondary" @click="fcIdx=(fcIdx-1+filteredCards.length)%filteredCards.length;cardFlipped=false">◀ السابق</button>
+            <button class="btn btn-secondary" @click="fcIdx=(fcIdx-1+filteredCards.length)%filteredCards.length;cardFlipped=false;speak(filteredCards[fcIdx]?.malay)">◀ السابق</button>
             <button class="btn btn-secondary" @click="cardFlipped=false">🔄</button>
-            <button class="btn btn-primary" @click="fcIdx=(fcIdx+1)%filteredCards.length;cardFlipped=false">التالي ▶</button>
+            <button class="btn btn-primary" @click="fcIdx=(fcIdx+1)%filteredCards.length;cardFlipped=false;speak(filteredCards[fcIdx]?.malay)">التالي ▶</button>
           </div>
 
           <!-- All words -->
@@ -632,7 +674,10 @@
             <div class="all-words">
               <template x-for="(fc,i) in filteredCards" :key="i">
                 <div class="word-chip" @click="fcIdx=i;cardFlipped=false;">
-                  <div class="w-malay" x-text="fc.malay"></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <div class="w-malay" x-text="fc.malay"></div>
+                    <button class="speak-btn" :class="{speaking: speakingText===fc.malay}" @click.stop="speak(fc.malay)" title="استمع">🔊</button>
+                  </div>
                   <div class="w-pron" x-text="fc.engPron"></div>
                   <div class="w-ar" x-text="fc.arabic"></div>
                 </div>
@@ -731,7 +776,10 @@
           <div style="display:grid;gap:12px;">
             <template x-for="s in pronPractice" :key="s.malay">
               <div class="phrase-card">
-                <div class="phrase-malay" x-text="s.malay"></div>
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+                  <div class="phrase-malay" x-text="s.malay" style="flex:1;"></div>
+                  <button class="speak-btn-lg" :class="{speaking: speakingText===s.malay}" @click.stop="speak(s.malay)">🔊 استمع</button>
+                </div>
                 <div class="phrase-pron" x-text="'🔤 '+s.pron"></div>
                 <div class="phrase-arabic" x-text="s.arabic"></div>
               </div>
@@ -752,7 +800,10 @@
             <div class="card-title" x-text="section.icon+' '+section.title"></div>
             <template x-for="p in section.phrases" :key="p.malay">
               <div class="phrase-card">
-                <div class="phrase-malay" x-text="p.malay"></div>
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+                  <div class="phrase-malay" x-text="p.malay" style="flex:1;"></div>
+                  <button class="speak-btn-lg" :class="{speaking: speakingText===p.malay}" @click.stop="speak(p.malay)">🔊 استمع</button>
+                </div>
                 <div class="phrase-pron" x-text="'🔤 '+p.pron"></div>
                 <div class="phrase-arabic" x-text="p.arabic"></div>
                 <div class="phrase-english" x-text="p.english"></div>
@@ -773,6 +824,8 @@
       xp: 0, streak: 1, learnedWords: 0,
       showConfetti: false,
       activeLessonModal: null,
+      ttsAvailable: false,
+      speakingText: '',
       lessonTab: 'vocab',
       cardFlipped: false,
       fcIdx: 0, fcFilter: 'all',
@@ -1237,6 +1290,50 @@
           this.lessons.forEach((l,i) => { if (d.done && d.done[i]) l.done = true; });
         }
         this.shuffledQ = [...this.allQ].sort(() => Math.random() - 0.5);
+
+        // Check TTS availability
+        this.ttsAvailable = 'speechSynthesis' in window;
+
+        // Pre-load voices (some browsers need this trigger)
+        if (this.ttsAvailable) {
+          window.speechSynthesis.getVoices();
+          window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+          };
+        }
+      },
+
+      speak(text) {
+        if (!text || !('speechSynthesis' in window)) return;
+        // Stop any ongoing speech
+        window.speechSynthesis.cancel();
+        if (this.speakingText === text) {
+          // Toggle off if same word tapped twice
+          this.speakingText = '';
+          return;
+        }
+        const utter = new SpeechSynthesisUtterance(text);
+
+        // Try to find a Malay voice, fallback gracefully
+        const voices = window.speechSynthesis.getVoices();
+        const malayVoice = voices.find(v =>
+          v.lang.startsWith('ms') ||
+          v.lang.toLowerCase().includes('malay') ||
+          v.name.toLowerCase().includes('malay')
+        );
+        if (malayVoice) {
+          utter.voice = malayVoice;
+        }
+        utter.lang = 'ms-MY';
+        utter.rate = 0.82;   // slightly slower — clearer for learning
+        utter.pitch = 1.0;
+        utter.volume = 1.0;
+
+        this.speakingText = text;
+        utter.onend   = () => { this.speakingText = ''; };
+        utter.onerror = () => { this.speakingText = ''; };
+
+        window.speechSynthesis.speak(utter);
       },
 
       save() {
